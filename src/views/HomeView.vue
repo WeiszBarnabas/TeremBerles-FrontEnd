@@ -1,8 +1,11 @@
 <template>
-    
-    <RouterLink to="/form">ÜRLAP</RouterLink>
 
-    <RouterLink to="/login">BEJELENTKEZÉS</RouterLink>
+    <div class="flex justify-evenly ">
+
+        <RouterLink class="capitalize" to="/form">ürlap</RouterLink>
+
+        <RouterLink class="capitalize" to="/login">bejelentkezés</RouterLink>
+    </div>
 
 </template>
 

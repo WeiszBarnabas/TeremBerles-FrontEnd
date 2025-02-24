@@ -1,56 +1,63 @@
-<template>
-    <h1><strong>Rendezvénybejelentő űrlap - Széchenyi István Egyetem</strong></h1>
+<template class="">
+    <h1 class="flex justify-center font-bold fs-5">Rendezvénybejelentő űrlap - Széchenyi István Egyetem</h1>
+
     <p>Tisztelt Űrlapkitöltő!</p>
-    <p>Jelen űrlap célja, hogy a Széchenyi István Egyetem Rendezvényszabályzatában foglaltaknak megfelelően bejelentést
+    <p>Jelen űrlap célja, hogy a Széchenyi István Egyetem Rendezvényszabályzatában foglaltaknak megfelelően
+        bejelentést
         tegyen rendezvényéről. Az űrlapot kérjük figyelmesen és precízen töltse ki, annak érdekében, hogy a szakmai
-        kollégák mihamarabb megadhassák engedélyüket a rendezvényre. Amennyiben kérdés merül fel Önben, kérjük keresse
+        kollégák mihamarabb megadhassák engedélyüket a rendezvényre. Amennyiben kérdés merül fel Önben, kérjük
+        keresse
         kollégánkat a <a href="mailto:rendezveny@sze.hu">rendezveny@sze.hu</a> e-mail címen vagy a 06 96 503 400
         (mellék: 3825) telefonszámon.</p>
 
-    <div>A RENDEZVÉNY ADATAI:</div>
+    <FormLayout class="gap-5">
+        <div class="capitalize font-bold">A rendezvény adatai:</div>
 
-
-    <div>
-        <div>Rendezvény neve</div>
-        <TextInput/>
-    </div>
-    <div>
-        <div>Rendezvény leírása</div>
-        <textarea cols="30" rows="3"></textarea>
-
-    </div>
-    <div>
-        <div>Rendezvény helyszíne </div>
-        <div><input id="text2" type="text" maxlength="255"></div>
-    </div>
-    <div>
-        <div>Rendezvény pontos címe: </div>
-        <div><input id="text3" type="text" maxlength="255"></div>
-        <div>Formátum: 9026 Győr, Egyetem tér 1.</div>
-    </div>
-    <div>
-        <div>Rendezvény kezdő dátuma </div>
-        <div><input type="text" id="">
+        <div class="flex justify-around items-center">
+            <div class="">Rendezvény neve:</div>
+            <TextInput  class="block w-1/2"/>
         </div>
-    </div>
-    <div>
-        <div>Rendezvény kezdő időpontja </div>
-        <div><input id="text5" type="text" maxlength="255" autocomplete="off">
+
+        <div>
+            <div>Rendezvény leírása:</div>
+            <Textarea />
 
         </div>
-    </div>
-    <div>
-        <div>Rendezvény záró dátuma </div>
-        <div><input type="text" id="">
-
+        <div class="flex justify-around items-center">
+            <div>Rendezvény helyszíne:</div>
+            <TextInput class="block w-1/2"/>
         </div>
-    </div>
-    <div>
-        <div>Rendezvény záró időpontja </div>
-        <div><input id="text7" type="text" maxlength="255" autocomplete="off">
-
+        <div class="flex justify-around items-center">
+            <div>Rendezvény pontos címe:</div>
+            <TextInput class="block w-1/2"/>
+            <div>Formátum: 9026 Győr, Egyetem tér 1.</div>
         </div>
-    </div>
+        <div>
+            <div>Rendezvény kezdő dátuma </div>
+            <TextInput class="block w-1/2"/>
+        </div>
+        <div>
+            <div>Rendezvény kezdő időpontja </div>
+            <TextInput class="block w-1/2"/>
+        </div>
+        <div>
+            <div>Rendezvény záró dátuma </div>
+            <TextInput />
+        </div>
+        <div>
+            <div>Rendezvény záró időpontja </div>
+            <TextInput />
+        </div>
+
+        <template #buttonText>
+            Next
+        </template>
+    </FormLayout>
+
+
+
+
+
     <div>
         <div>Rendezvény típusa </div>
         <div>
@@ -603,11 +610,14 @@
 
 
 
+
     <button>Küldés</button>
 
 </template>
 
 <script setup>
+import FormLayout from '@/components/FormLayout.vue';
+import Textarea from '@/components/Textarea.vue';
 import TextInput from '@/components/TextInput.vue';
 
 
