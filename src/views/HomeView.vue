@@ -1,15 +1,19 @@
 <template>
 
-    <div class="flex justify-evenly ">
+    <div class="">
 
-        <RouterLink class="capitalize" to="/form">ürlap</RouterLink>
+        <ApplicationLayout>
+            <!-- <RouterLink class="capitalize" to="/form">ürlap</RouterLink>
+    
+            <RouterLink class="capitalize" to="/login">bejelentkezés</RouterLink> -->
+        </ApplicationLayout>
 
-        <RouterLink class="capitalize" to="/login">bejelentkezés</RouterLink>
     </div>
 
 </template>
 
 <script setup>
+import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import { RouterLink } from 'vue-router';
 
 

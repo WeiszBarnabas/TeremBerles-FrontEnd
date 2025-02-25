@@ -1,6 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap');
 @import "tailwindcss";
 
+@theme{
+    --color-primary: #242943;
+    --color-secondary: #50ADC9;
+    --color-extra: #D9D9D9;
+    
+}
+
+
+
 body{
     font-family: Montserrat;
 }

@@ -11,6 +11,6 @@
 </template>
 
 <script setup>
-import PrimaryButton from './PrimaryButton.vue';
+import PrimaryButton from '@/components/PrimaryButton.vue';
 
 </script>
