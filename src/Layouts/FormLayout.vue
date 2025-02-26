@@ -1,16 +1,27 @@
 <template>
-    <div class="max-w-2/3 mx-auto border rounded-2xl from-blue-600 to-blue-400 bg-gradient-to-l">
-        <div class="max-w-4/5 mx-auto">
-            <slot />
-            <div class="flex justify-end">
-                <PrimaryButton class=""><slot name="buttonText"/></PrimaryButton>
+
+
+    <div class="py-3 max-w-7xl mx-auto sm:px-6 lg:px-8 h-full">
+        <div class="bg-secondary overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-3 text-black flex ">
+                <slot name="introduction" />
             </div>
         </div>
-
     </div>
+
+
+
+    <div class="py-3 max-w-7xl mx-auto sm:px-6 lg:px-8 h-full">
+        <div class="bg-extra overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-3 text-black flex w-full">
+                <slot />
+            </div>
+        </div>
+    </div>
+
+
 </template>
 
 <script setup>
-import PrimaryButton from '@/components/PrimaryButton.vue';
 
 </script>

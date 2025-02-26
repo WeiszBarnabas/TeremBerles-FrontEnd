@@ -25,6 +25,8 @@
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import TextInput from '@/components/TextInput.vue';
 import { ref } from 'vue';
+import axios from 'axios';
+
 
 const name = ref("");
 
