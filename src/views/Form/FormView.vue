@@ -5,8 +5,8 @@ import FormIntrodiction from './Partials/FormIntrodiction.vue';
 import TextInput from '@/components/TextInput.vue';
 import Textarea from '@/components/Textarea.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
-<<<<<<< HEAD
 import axios from 'axios';
+import VerifyReCAPCTHA from '@/components/VerifyReCAPCTHA.vue';
 
 const testData = {
     "name": "teszt form készités",
@@ -20,9 +20,6 @@ const send = async () => {
     let response = await axios.post("http://127.0.0.1:8000/api/send-form",testData);
 }
 
-=======
-import VerifyReCAPCTHA from '@/components/VerifyReCAPCTHA.vue';
->>>>>>> e1ccab567f3e08f8f6d86322e252bdc4c287b1e1
 </script>
 
 <template class="">
