@@ -32,10 +32,7 @@ const name = ref("");
 
 
 const login = () => {
-    
+
 }
-
-
-
 
 </script>

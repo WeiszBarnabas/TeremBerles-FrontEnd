@@ -5,6 +5,7 @@ import FormIntrodiction from './Partials/FormIntrodiction.vue';
 import TextInput from '@/components/TextInput.vue';
 import Textarea from '@/components/Textarea.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
+import VerifyReCAPCTHA from '@/components/VerifyReCAPCTHA.vue';
 </script>
 
 <template class="">
@@ -80,5 +81,6 @@ import PrimaryButton from '@/components/PrimaryButton.vue';
 
     </ApplicationLayout>
 
+    <VerifyReCAPCTHA/>
 
 </template>
