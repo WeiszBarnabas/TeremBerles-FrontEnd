@@ -33,9 +33,9 @@ const router = createRouter({
 })
 
 function checkAccess(from, to, next) {
+  let store = useUserStore()
   
   let isLoggedIn;
-  let store = useUserStore()
 
   try {
     isLoggedIn = store.isLoggedIn

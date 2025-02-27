@@ -5,6 +5,20 @@ import FormIntrodiction from './Partials/FormIntrodiction.vue';
 import TextInput from '@/components/TextInput.vue';
 import Textarea from '@/components/Textarea.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
+import axios from 'axios';
+
+const testData = {
+    "name": "teszt form készités",
+    "description": "egy testelésből kódba égetettt leírás",
+    "place": "valami szakatt termet adjatok",
+    "address": "9026 Győr, Egyetem tér 1.",
+}
+
+
+const send = async () => {
+    let response = await axios.post("http://127.0.0.1:8000/api/send-form",testData);
+}
+
 </script>
 
 <template class="">
@@ -59,7 +73,7 @@ import PrimaryButton from '@/components/PrimaryButton.vue';
                                     <span class="text-red-600">*</span>
                                 </div>
                                 <div class="w-1/3">
-                                    <TextInput class="block w-full" placeholder="9026 Győr, Egyetem tér 1."/>
+                                    <TextInput class="block w-full" placeholder="9026 Győr, Egyetem tér 1." />
                                 </div>
                             </div>
                         </div>
@@ -71,7 +85,7 @@ import PrimaryButton from '@/components/PrimaryButton.vue';
                 </div>
 
                 <div class="flex justify-center">
-                    <PrimaryButton>Beküldés</PrimaryButton>
+                    <PrimaryButton @click="send">Beküldés</PrimaryButton>
                 </div>
             </div>
 

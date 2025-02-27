@@ -1,10 +1,10 @@
 <template>
 
     <div class=" overflow-hidden">
-        <div class="text-gray-100 flex">
+        <div class=" flex">
             <div class="bg-primary p-3 w-1/5 h-screen flex flex-col justify-between">
 
-                <div class="w-full">
+                <div class="w-full text-gray-100">
                     <div class="mb-14 flex justify-center">
                         <slot name="image" />
                     </div>

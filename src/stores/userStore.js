@@ -21,5 +21,6 @@ export const useUserStore = defineStore('user', {
         setLoggedIn(state) {
             this.isLoggedIn = state;
         }
-    }
+    },
+    persist: true,
 })
