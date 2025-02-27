@@ -27,7 +27,7 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
-      //beforeEnter: checkAccess
+      beforeEnter: checkAccess
     },
   ],
 })
