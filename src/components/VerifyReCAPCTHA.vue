@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import PrimaryButton from '@/components/PrimaryButton.vue';
 import axios from "axios";
 
 const recaptchaToken = ref("");
@@ -12,7 +13,7 @@ const verifyRecaptcha = async () => {
       });
     });
 
-    const response = await axios.post("http://127.0.0.1:8000/verify-recaptcha", {
+    const response = await axios.post("http://127.0.0.1:8000/api/verify-recaptcha", {
       token: recaptchaToken.value,
     });
 
@@ -24,5 +25,5 @@ const verifyRecaptcha = async () => {
 </script>
 
 <template>
-  <button @click="verifyRecaptcha">reCAPTCHA ellenőrzés</button>
+  <PrimaryButton @click="verifyRecaptcha">reCAPTCHA ellenőrzés</PrimaryButton>
 </template>

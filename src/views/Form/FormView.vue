@@ -6,7 +6,8 @@ import TextInput from '@/components/TextInput.vue';
 import Textarea from '@/components/Textarea.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import axios from 'axios';
-import VerifyReCAPCTHA from '@/components/VerifyReCAPCTHA.vue';
+
+import { ref } from "vue";
 
 const testData = {
     "name": "teszt form készités",
@@ -15,9 +16,32 @@ const testData = {
     "address": "9026 Győr, Egyetem tér 1.",
 }
 
+const recaptchaToken = ref("");
+
+const verifyRecaptcha = async () => {
+  try {
+    recaptchaToken.value = await new Promise((resolve, reject) => {
+      grecaptcha.ready(() => {
+        grecaptcha.execute("6LfZm-MqAAAAAFC8LhmritWz5OJeR3IecxBf8rmb", { action: "submit" }).then(resolve).catch(reject);
+      });
+    });
+
+    const response = await axios.post("http://127.0.0.1:8000/api/verify-recaptcha", {
+      token: recaptchaToken.value,
+    });
+
+    console.log("reCAPTCHA válasz:", response.data);
+  } catch (error) {
+    console.error("Hiba a reCAPTCHA ellenőrzése során:", error);
+  }
+};
 
 const send = async () => {
-    let response = await axios.post("http://127.0.0.1:8000/api/send-form",testData);
+    await verifyRecaptcha();
+
+    if(recaptchaToken.value){
+        let response = await axios.post("http://127.0.0.1:8000/api/send-form",testData);
+    }
 }
 
 </script>
@@ -39,52 +63,52 @@ const send = async () => {
             <div class="w-full">
                 <div class="">
                     <div class="p-3">
-                        <div class="capitalize font-bold">A rendezvény adatai</div>
+                        <div class="capitalize">A rendezvény adatai</div>
                     </div>
-                    <div class="mx-auto w-3/5">
+                    <div class="mx-auto w-4/5">
 
                         <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <div>
-                                    Rendezvény neve
-                                    <span class="text-red-600">*</span>
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
+                                <div class="sm:w-1/3 w-full">
+                                    Rendezvény neve <span class="text-red-600">*</span>
                                 </div>
-                                <TextInput class="block w-1/3" />
+                                <TextInput class="block sm:w-3/4 w-full mt-2 sm:mt-0" />
                             </div>
 
-                            <div class="flex justify-between items-center mb-3">
-                                <div>
+
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
+                                <div class="sm:w-1/3 w-full">
                                     Rendezvény leírása
                                     <span class="text-red-600">*</span>
                                 </div>
-                                <Textarea class="block w-1/3" />
+                                <Textarea class="block sm:w-3/4 w-full mt-2 sm:mt-0" />
                             </div>
 
-                            <div class="flex justify-between items-center mb-3">
-                                <div>
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
+                            
+                                <div class="sm:w-1/3 w-full">
                                     Rendezvény helyszíne
                                     <span class="text-red-600">*</span>
                                 </div>
-                                <TextInput class="block w-1/3" />
+                                <TextInput class="block sm:w-3/4 w-full mt-2 sm:mt-0" />
                             </div>
 
-                            <div class="flex justify-between items-center mb-3">
-                                <div>
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
+                            
+                                <div class="sm:w-1/3 w-full">
                                     Rendezvény pontos címe
                                     <span class="text-red-600">*</span>
                                 </div>
-                                <div class="w-1/3">
-                                    <TextInput class="block w-full" placeholder="9026 Győr, Egyetem tér 1." />
-                                </div>
+                                    <TextInput class="block sm:w-3/4 w-full mt-2 sm:mt-0" placeholder="9026 Győr, Egyetem tér 1." />
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="p-3">
-                    <div class="capitalize font-bold">A rendezvény tipusa</div>
+                    <div class="capitalize">A rendezvény tipusa</div>
                 </div>
-
+                
                 <div class="flex justify-center">
                     <PrimaryButton @click="send">Beküldés</PrimaryButton>
                 </div>
@@ -95,6 +119,5 @@ const send = async () => {
 
     </ApplicationLayout>
 
-    <VerifyReCAPCTHA/>
 
 </template>
