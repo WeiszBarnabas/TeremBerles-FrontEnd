@@ -8,14 +8,14 @@
 
 
         <IncomeingFormsComponent :forms="forms"/>
-
+        
     </DashboardLayout>
 
 </template>
 
 <script setup>
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
-import IncomeingFormsComponent from '@/components/IncomeingFormsComponent.vue';
+import IncomeingFormsComponent from '@/views/Dashboard/Partials/IncomeingFormsComponent.vue';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import { useUserStore } from '@/stores/userStore';
 import axios from 'axios';

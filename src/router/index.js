@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FormView from '../views/Form/FormView.vue'
 import LoginView from '@/views/LoginView.vue'
-import DashboardView from '@/views/DashboardView.vue'
+import DashboardView from '@/views/Dashboard/DashboardView.vue'
 import { useUserStore } from '@/stores/userStore'
 
 const router = createRouter({
@@ -27,7 +27,7 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
-      beforeEnter: checkAccess
+      //beforeEnter: checkAccess
     },
   ],
 })
