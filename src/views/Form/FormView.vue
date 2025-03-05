@@ -153,7 +153,7 @@ const goToStep = (step) => {
 
 <template>
   <ApplicationLayout>
-    <div class="bg-white max-w-2xl w-full mx-auto p-6 rounded-lg shadow-lg">
+    <div class="bg-white max-w-5xl w-full mx-auto p-6 rounded-lg shadow-lg">
       <h1 class="font-bold text-2xl text-black my-6 text-center">Rendezvénybejelentő űrlap - Széchenyi István Egyetem</h1>
 
       <div class="flex justify-between mb-6">

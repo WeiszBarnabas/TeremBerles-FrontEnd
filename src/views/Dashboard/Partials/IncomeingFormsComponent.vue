@@ -6,8 +6,7 @@ defineProps(["forms"])
 </script>
 
 <template>
-    <div
-        class="relative flex flex-col w-full h-full text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
+    <div class="relative flex flex-col w-full h-full text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
         <table class="w-full text-left table-auto min-w-max">
             <thead>
                 <tr>
@@ -26,7 +25,7 @@ defineProps(["forms"])
                     <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                         <p
                             class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                            valami
+                            Cím
                         </p>
                     </th>
                     <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50 ">
@@ -44,10 +43,10 @@ defineProps(["forms"])
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="form in forms">
+                <tr v-for="form in forms" class="hover:bg-gray-100">
                     <td class="p-4">
                         <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {{form.id }}
+                            {{ form.id }}
                         </p>
                     </td>
                     <td class="p-4">
@@ -68,8 +67,7 @@ defineProps(["forms"])
                         </div>
                     </td>
                     <td class="p-4">
-                        <a href="#"
-                            class="block font-sans text-sm antialiased font-medium leading-normal">
+                        <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal">
                             <slot name="nextButton" />
                         </a>
                     </td>

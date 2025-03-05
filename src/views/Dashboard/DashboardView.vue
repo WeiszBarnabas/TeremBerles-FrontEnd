@@ -13,7 +13,6 @@
                 </InfoButton>
             </template>
         </IncomeingFormsComponent>
-        
     </DashboardLayout>
 
 </template>
@@ -22,10 +21,10 @@
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
 import IncomeingFormsComponent from '@/views/Dashboard/Partials/IncomeingFormsComponent.vue';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import InfoButton from '@/components/InfoButton.vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/userStore';
 import { ref } from 'vue';
-import InfoButton from '@/components/InfoButton.vue';
 
 const forms = ref();
 const store = useUserStore()
