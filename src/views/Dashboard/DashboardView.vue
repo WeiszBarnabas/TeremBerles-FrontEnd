@@ -2,12 +2,17 @@
     <DashboardLayout>
         <template #image>
             <ApplicationLogo />
-            <!-- <img src="../assets/egyetemi logo/allo_RGB/sze_logo_allo_RGB_dark_blue_bg.png" alt="" class="w-1/2"> -->
         </template>
 
 
 
-        <IncomeingFormsComponent :forms="forms"/>
+        <IncomeingFormsComponent :forms="forms">
+            <template #nextButton>
+                <InfoButton>
+                    Tovább
+                </InfoButton>
+            </template>
+        </IncomeingFormsComponent>
         
     </DashboardLayout>
 
@@ -17,9 +22,10 @@
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
 import IncomeingFormsComponent from '@/views/Dashboard/Partials/IncomeingFormsComponent.vue';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
-import { useUserStore } from '@/stores/userStore';
 import axios from 'axios';
+import { useUserStore } from '@/stores/userStore';
 import { ref } from 'vue';
+import InfoButton from '@/components/InfoButton.vue';
 
 const forms = ref();
 const store = useUserStore()
