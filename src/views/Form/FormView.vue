@@ -121,14 +121,16 @@ const verifyRecaptcha = async () => {
     });
     const response = await axios.post("http://127.0.0.1:8000/api/verify-recaptcha", { token: recaptchaToken.value });
     console.log("reCAPTCHA válasz:", response.data);
+    return response.data;
   } catch (error) {
     console.error("Hiba a reCAPTCHA ellenőrzése során:", error);
   }
 };
 
 const send = async () => {
-  await verifyRecaptcha();
-  if (recaptchaToken.value) {
+  const recaptchaValue = await verifyRecaptcha();
+  
+  if (recaptchaValue.success) {
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/send-form", formData.value);
       console.log("Form submitted:", response.data);
