@@ -5,10 +5,6 @@
                 <InfoButton>Tovább</InfoButton>
             </template>
         </IncomeingFormsComponent>
-
-
-
-        
     </DashboardLayout>
 
 </template>

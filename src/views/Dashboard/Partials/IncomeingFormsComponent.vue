@@ -1,6 +1,5 @@
 <script setup>
-import InfoButton from '@/components/InfoButton.vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
+
 
 defineProps(["forms"])
 </script>
@@ -25,7 +24,7 @@ defineProps(["forms"])
                     <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                         <p
                             class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                            Cím
+                            Létrehozva
                         </p>
                     </th>
                     <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50 ">
@@ -56,7 +55,7 @@ defineProps(["forms"])
                     </td>
                     <td class="p-4">
                         <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {{ form.address }}
+                            {{ form.created_at.split("T")[0].replaceAll("-",".") }}
                         </p>
                     </td>
                     <td class="p-4">

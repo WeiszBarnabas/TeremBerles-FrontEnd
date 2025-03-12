@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue';
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
 import NavLink from '@/components/NavLink.vue';
 
@@ -22,15 +21,14 @@ import NavLink from '@/components/NavLink.vue';
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="space-x-8 sm:-my-px sm:ms-10  flex items-center">
+                            <div class="space-x-8 sm:-my-px sm:ms-10  flex items-center ">
                                 <NavLink href="/form">
                                     ürlap
                                 </NavLink>
-                                <NavLink href="/login">
-                                    bejelentkezés
-                                </NavLink>
+                                <a href="/login" class="text-white rounded-md w-12 h-12 flex justify-center items-center hover:bg-gray-500">
+                                    <font-awesome-icon icon="fa-solid fa-user"/>
+                                </a>
                             </div>
-
                         </div>
                 </div>
                 </div>
