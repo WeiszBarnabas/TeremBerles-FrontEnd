@@ -1,9 +1,5 @@
 <template>
     <DashboardLayout>
-        <StatisticComponent :eventNumber="forms.length" v-if="!showData">
-
-        </StatisticComponent>
-
         <IncomeingFormsComponent v-if="!showData">
             <template v-for="form in forms">
                 <tr class="hover:bg-gray-100">
@@ -14,7 +10,7 @@
                     </td>
                     <td class="p-4">
                         <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {{ form.name }}
+                            {{ form.event_name }}
                         </p>
                     </td>
                     <td class="p-4">
