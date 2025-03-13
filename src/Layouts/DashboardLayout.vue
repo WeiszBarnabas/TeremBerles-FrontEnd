@@ -8,7 +8,7 @@
                         {{ store.$state.user.data.user.name }}
                     </div>
                 </div>
-                <LogoutButton />
+                <LogoutButton @click="logout"/>
             </div>
 
             <div class="p-3 ">
@@ -25,8 +25,17 @@
 import LogoutButton from '@/components/LogoutButton.vue';
 import SideBarComponent from '@/components/SideBarComponent.vue';
 import { useUserStore } from '@/stores/userStore';
-
+import { useRouter } from 'vue-router';
 
 const store = useUserStore()
+const router = useRouter()
+
+const logout = () => {
+    store.setLoggedIn(false);
+    store.setUser(null);
+
+    router.push("/")    
+
+}
 
 </script>
