@@ -30,12 +30,14 @@ import { useRouter } from 'vue-router';
 const store = useUserStore()
 const router = useRouter()
 
+
 const logout = () => {
     store.setLoggedIn(false);
     store.setUser(null);
 
-    router.push("/")    
-
+    router.push("/").then(() => {
+        window.location.reload();
+    });
 }
 
 </script>

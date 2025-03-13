@@ -42,35 +42,7 @@ defineProps(["forms"])
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="form in forms" class="hover:bg-gray-100">
-                    <td class="p-4">
-                        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {{ form.id }}
-                        </p>
-                    </td>
-                    <td class="p-4">
-                        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {{ form.name }}
-                        </p>
-                    </td>
-                    <td class="p-4">
-                        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {{ form.created_at.split("T")[0].replaceAll("-",".") }}
-                        </p>
-                    </td>
-                    <td class="p-4">
-                        <div class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            <div class="text-white bg-green-500 rounded-xl w-fit py-0.5 px-2">
-                                allaasdasdsapot
-                            </div>
-                        </div>
-                    </td>
-                    <td class="p-4">
-                        <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal">
-                            <slot name="nextButton" />
-                        </a>
-                    </td>
-                </tr>
+               <slot/>
             </tbody>
         </table>
     </div>
