@@ -12,7 +12,7 @@
             </div>
 
             <div class="p-3 ">
-
+                <slot name="statistic" />
                 <slot />
 
             </div>
