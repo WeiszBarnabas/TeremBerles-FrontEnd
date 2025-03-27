@@ -28,7 +28,8 @@ const formData = ref({
     pressPublic: "",
     nature: "",
     programPlan: "",
-    venueSetup: ""
+    venueSetup: "",
+    venueSetupService: ""
   },
   logistics: {
     accommodationNeeded: "",
@@ -40,7 +41,8 @@ const formData = ref({
     wasteHandler: "",
     internetNeeded: "",
     techSupportNeeded: "",
-    techEquipment: ""
+    techEquipment: "",
+    securityServiceNeeded: ""
   },
   additionalRequirements: {
     limitedMobility: "",
@@ -66,7 +68,9 @@ const formData = ref({
     cleaningDuring: "",
     electricalNeeded: [],
     powerCabinet: "",
-    powerDemand: ""
+    powerDemand: "",
+    includeInEventRecommendation: "",
+    includeInCentralCalendar: ""
   },
   safetyCompliance: {
     fireHazard: "",
@@ -88,7 +92,8 @@ const formData = ref({
       phone: "",
       email: "",
       address: ""
-    }
+    },
+    workNumber: ""
   },
   clientDetails: {
     name: "",
@@ -109,8 +114,8 @@ const formData = ref({
 
 const currentStep = ref(0);
 const totalSteps = 10;
-
 const recaptchaToken = ref("");
+const errorMessage = ref("");
 
 const verifyRecaptcha = async () => {
   try {
@@ -127,29 +132,196 @@ const verifyRecaptcha = async () => {
   }
 };
 
-const send = async () => {
-  const recaptchaValue = await verifyRecaptcha();
+const isInternalEvent = () => {
+  return ["university", "universityStudent", "universitySports"].includes(formData.value.eventType);
+};
 
-  // if (recaptchaValue.success) {
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/send-form", formData.value);
-      console.log("Form submitted:", response.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+const isExternalEvent = () => {
+  return ["externalSports", "external"].includes(formData.value.eventType);
+};
+
+const validateStep = (step) => {
+  let errors = [];
+
+  if (step === 1) {
+    if (!formData.value.eventDetails.name) errors.push("Rendezvény neve kötelező.");
+    if (!formData.value.eventDetails.description) errors.push("Rendezvény leírása kötelező.");
+    if (!formData.value.eventDetails.place) errors.push("Rendezvény helyszíne kötelező.");
+    if (!formData.value.eventDetails.address) errors.push("Rendezvény pontos címe kötelező.");
+    if (!formData.value.eventType) errors.push("Rendezvény típusa kötelező.");
+    if (!formData.value.eventClassification) errors.push("Rendezvény minősítése kötelező.");
+    if (!formData.value.timing.startDate) errors.push("Rendezvény kezdő dátuma kötelező.");
+    if (!formData.value.timing.startTime) errors.push("Rendezvény kezdő időpontja kötelező.");
+    if (!formData.value.timing.endDate) errors.push("Rendezvény záró dátuma kötelező.");
+    if (!formData.value.timing.endTime) errors.push("Rendezvény záró időpontja kötelező.");
+  }
+
+  if (step === 2) {
+    if (!formData.value.specifics.participants) errors.push("Résztvevők várható létszáma kötelező.");
+    if (!formData.value.specifics.pressPublic) errors.push("Sajtónyilvános rendezvény kérdés megválaszolása kötelező.");
+    if (!formData.value.specifics.nature) errors.push("Rendezvény jellege kötelező.");
+    if (!formData.value.specifics.programPlan) errors.push("Részletes programterv kötelező.");
+    if (!formData.value.specifics.venueSetup) errors.push("Helyszín berendezési módja kötelező.");
+    if (!formData.value.specifics.venueSetupService) errors.push("Helyszín berendezési módja (kiválasztás) kötelező.");
+  }
+
+  if (step === 3) {
+    if (!formData.value.logistics.accommodationNeeded) errors.push("Szállásigény kérdés megválaszolása kötelező.");
+    if (formData.value.logistics.accommodationNeeded === "yes" && !formData.value.logistics.accommodationCount) {
+      errors.push("Szállásigény létszáma kötelező.");
     }
- // }
+    if (!formData.value.logistics.parkingNeeded) errors.push("Parkolóhely igény kérdés megválaszolása kötelező.");
+    if (formData.value.logistics.parkingNeeded === "yes" && !formData.value.logistics.parkingDetails) {
+      errors.push("Gépkocsiforgalom és parkolóhely igény leírása kötelező.");
+    }
+    if (!formData.value.logistics.securityServiceNeeded) errors.push("Portaszolgálat igénylése kérdés megválaszolása kötelező.");
+  }
+
+  if (step === 4) {
+    if (!formData.value.logistics.wasteGenerated) errors.push("Keletkezik hulladék kérdés megválaszolása kötelező.");
+    if (formData.value.logistics.wasteGenerated === "yes") {
+      if (!formData.value.logistics.wasteDisposal) errors.push("Hulladék elszállításának módja kötelező.");
+      if (!formData.value.logistics.wasteHandler) errors.push("Hulladék elszállítójának megadása kötelező.");
+    }
+  }
+
+  if (step === 5) {
+    if (!formData.value.logistics.internetNeeded) errors.push("Internetkapcsolat szükségességének megválaszolása kötelező.");
+    if (!formData.value.logistics.techSupportNeeded) errors.push("Oktatástechnikai támogatás szükségességének megválaszolása kötelező.");
+    if (!formData.value.logistics.techEquipment) errors.push("Oktatástechnikai eszközigény megadása kötelező.");
+  }
+
+  if (step === 6) {
+    if (!formData.value.additionalRequirements.limitedMobility) errors.push("Korlátozott mozgású résztvevők kérdés megválaszolása kötelező.");
+    if (!formData.value.additionalRequirements.photoVideoRecording) errors.push("Fotó/videófelvétel kérdés megválaszolása kötelező.");
+    if (formData.value.additionalRequirements.photoVideoRecording === "yes" && !formData.value.additionalRequirements.recordingTools) {
+      errors.push("Felvétel eszközeinek megadása kötelező.");
+    }
+    if (!formData.value.additionalRequirements.cateringNeeded) errors.push("Catering szükségességének megválaszolása kötelező.");
+    if (formData.value.additionalRequirements.cateringNeeded === "yes" && formData.value.additionalRequirements.cateringType.length === 0) {
+      errors.push("Catering típusának kiválasztása kötelező.");
+    }
+    if (isInternalEvent()) {
+      if (!formData.value.additionalRequirements.includeInEventRecommendation) errors.push("Heti eseményajánlóban való szereplés kérdés megválaszolása kötelező.");
+      if (!formData.value.additionalRequirements.includeInCentralCalendar) errors.push("Központi rendezvénynaptárban való szereplés kérdés megválaszolása kötelező.");
+    }
+  }
+
+  if (step === 7) {
+    if (!formData.value.additionalRequirements.constructionNeeded) errors.push("Építési/bontási munkálatok kérdés megválaszolása kötelező.");
+    if (formData.value.additionalRequirements.constructionNeeded === "yes") {
+      if (!formData.value.additionalRequirements.constructionDates.startDate) errors.push("Terület igénybevételének dátuma kötelező.");
+      if (!formData.value.additionalRequirements.constructionDates.startTime) errors.push("Terület igénybevételének időpontja kötelező.");
+      if (!formData.value.additionalRequirements.constructionDates.endDate) errors.push("Terület visszaadásának dátuma kötelező.");
+      if (!formData.value.additionalRequirements.constructionDates.endTime) errors.push("Terület visszaadásának időpontja kötelező.");
+      if (!formData.value.additionalRequirements.subcontractors) errors.push("Alvállalkozók megadása kötelező.");
+      if (!formData.value.additionalRequirements.highAltitudeWork) errors.push("Magasban végzett tevékenység kérdés megválaszolása kötelező.");
+      if (!formData.value.additionalRequirements.scaffoldingNeeded) errors.push("Állvány szükségességének megválaszolása kötelező.");
+      if (!formData.value.additionalRequirements.manualMaterialHandling) errors.push("Kézi anyagmozgatás kérdés megválaszolása kötelező.");
+      if (!formData.value.additionalRequirements.mechanicalMaterialHandling) errors.push("Gépi anyagmozgatás kérdés megválaszolása kötelező.");
+      if (formData.value.additionalRequirements.mechanicalMaterialHandling === "yes" && formData.value.additionalRequirements.mechanicalEquipment.length === 0) {
+        errors.push("Gépi anyagmozgatás eszközeinek kiválasztása kötelező.");
+      }
+      if (formData.value.additionalRequirements.mechanicalEquipment.includes("other") && !formData.value.additionalRequirements.mechanicalOtherTool) {
+        errors.push("Egyéb eszköz megadása kötelező.");
+      }
+    }
+    if (!formData.value.additionalRequirements.cleaningBefore) errors.push("Takarítás a rendezvény előtt kérdés megválaszolása kötelező.");
+    if (!formData.value.additionalRequirements.cleaningDuring) errors.push("Takarítási ügyelet a rendezvény alatt kérdés megválaszolása kötelező.");
+    if (!formData.value.additionalRequirements.electricalNeeded.length) errors.push("Villanyszerelői ügyelet szükségességének megválaszolása kötelező.");
+    if (!formData.value.additionalRequirements.powerCabinet) errors.push("Rendezvényszekrényből áram vételezése kérdés megválaszolása kötelező.");
+    if (!formData.value.additionalRequirements.powerDemand) errors.push("Áramigény megadása kötelező.");
+  }
+
+  if (step === 8) {
+    if (!formData.value.safetyCompliance.fireHazard) errors.push("Tűzveszélyes tevékenység kérdés megválaszolása kötelező.");
+    if (formData.value.safetyCompliance.fireHazard === "yes") {
+      if (!formData.value.safetyCompliance.fireHazardDescription) errors.push("Tűzveszély leírása kötelező.");
+      if (!formData.value.safetyCompliance.activities.length) errors.push("Várható tevékenységek kiválasztása kötelező.");
+    }
+    if (!formData.value.safetyCompliance.chemicalUsage) errors.push("Vegyi anyag felhasználása kérdés megválaszolása kötelező.");
+    if (formData.value.safetyCompliance.chemicalUsage === "yes" && !formData.value.safetyCompliance.chemicalDescription) {
+      errors.push("Vegyi tevékenység leírása kötelező.");
+    }
+    if (!formData.value.safetyCompliance.decorations) errors.push("Dekoráció a légtérben kérdés megválaszolása kötelező.");
+  }
+
+  if (step === 9) {
+    if (!formData.value.organizerDetails.name) errors.push("Teljes név kötelező.");
+    if (!formData.value.organizerDetails.phone) errors.push("Telefonszám kötelező.");
+    if (!formData.value.organizerDetails.email) errors.push("E-mail cím kötelező.");
+    if (!formData.value.organizerDetails.address) errors.push("Lakcím kötelező.");
+    if (isInternalEvent() && !formData.value.organizerDetails.workNumber) errors.push("Munkaszám kötelező belső rendezvény esetén.");
+    if (!formData.value.organizerDetails.additionalOrganizer) errors.push("További szervező kérdés megválaszolása kötelező.");
+    if (formData.value.organizerDetails.additionalOrganizer === "yes") {
+      if (!formData.value.organizerDetails.additionalOrganizerDetails.name) errors.push("További szervező neve kötelező.");
+      if (!formData.value.organizerDetails.additionalOrganizerDetails.neptunCode) errors.push("Neptun kód kötelező.");
+      if (!formData.value.organizerDetails.additionalOrganizerDetails.phone) errors.push("További szervező telefonszáma kötelező.");
+      if (!formData.value.organizerDetails.additionalOrganizerDetails.email) errors.push("További szervező e-mail címe kötelező.");
+      if (!formData.value.organizerDetails.additionalOrganizerDetails.address) errors.push("További szervező lakcíme kötelező.");
+    }
+    if (isExternalEvent()) {
+      if (!formData.value.clientDetails.name) errors.push("Megrendelő neve/cégneve kötelező külső rendezvény esetén.");
+      if (!formData.value.clientDetails.address) errors.push("Megrendelő címe kötelező külső rendezvény esetén.");
+      if (!formData.value.clientDetails.taxNumber) errors.push("Adószám kötelező külső rendezvény esetén.");
+      if (!formData.value.clientDetails.phone) errors.push("Megrendelő telefonszáma kötelező külső rendezvény esetén.");
+      if (!formData.value.clientDetails.email) errors.push("Megrendelő e-mail címe kötelező külső rendezvény esetén.");
+    }
+    if (!formData.value.fileUploads.eventNotificationForm) errors.push("Rendezvénybejelentő nyomtatvány feltöltése kötelező.");
+    if (!formData.value.agreements.dataProtection) errors.push("Adatkezelési hozzájárulás elfogadása kötelező.");
+    if (!formData.value.agreements.eventRegulations) errors.push("Rendezvényszabályzat elfogadása kötelező.");
+  }
+
+  return errors;
+};
+
+const validateAllSteps = () => {
+  let allErrors = [];
+  for (let step = 1; step <= 9; step++) {
+    const stepErrors = validateStep(step);
+    allErrors = allErrors.concat(stepErrors);
+  }
+  return allErrors;
 };
 
 const nextStep = () => {
+  errorMessage.value = "";
+  const errors = validateStep(currentStep.value);
+  if (errors.length > 0) {
+    errorMessage.value = errors.join(" ");
+    return;
+  }
   if (currentStep.value < totalSteps - 1) currentStep.value++;
 };
 
 const prevStep = () => {
+  errorMessage.value = "";
   if (currentStep.value > 0) currentStep.value--;
 };
 
 const goToStep = (step) => {
+  errorMessage.value = "";
   currentStep.value = step;
+};
+
+const send = async () => {
+  errorMessage.value = ""; 
+  const errors = validateAllSteps();
+  if (errors.length > 3) {
+    errorMessage.value = "Kérem, töltse ki a hiányzó mezőket!";
+    return;
+  }
+  else{
+    errorMessage.value = errors.join(" ");
+    return;
+  }
+  const recaptchaValue = await verifyRecaptcha();
+  try {
+    const response = await axios.post("http://127.0.0.1:8000/api/send-form", formData.value);
+    console.log("Form submitted:", response.data);
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
 };
 </script>
 
@@ -166,6 +338,10 @@ const goToStep = (step) => {
             {{ index + 1 }}
           </div>
         </div>
+      </div>
+
+      <div v-if="errorMessage" class="text-red-600 text-center mb-4">
+        {{ errorMessage }}
       </div>
 
       <FormLayout>
@@ -206,26 +382,14 @@ const goToStep = (step) => {
             <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
               <div class="sm:w-1/3 w-full font-medium text-black text-base">Rendezvény típusa <span
                   class="text-red-600">*</span></div>
-
-
-              <select id="event_type" class="border border-primary p-1.5 rounded-md text-black block sm:w-3/4 w-full mt-2 sm:mt-0 " v-model="formData.eventType" :class="{'text-gray-600':!formData.eventType}" >
+              <select id="event_type" class="border border-primary p-1.5 rounded-md text-black block sm:w-3/4 w-full mt-2 sm:mt-0" v-model="formData.eventType" :class="{'text-gray-600': !formData.eventType}">
                 <option value="" selected hidden disabled>Típusok</option>
-                <option value="0">Egyetemi szervezésű rendezvények</option>
-                <option value="1">Hallgatói rendezvények</option>
-                <option value="2">Külső szervezésű rendezvények</option>
-                <option value="3">Sportrendezvények</option>
+                <option value="university">Egyetemi szervezésű rendezvény</option>
+                <option value="universityStudent">Egyetemi szervezésű hallgatói rendezvény</option>
+                <option value="universitySports">Egyetemi szervezésű sportrendezvény</option>
+                <option value="externalSports">Külső szervezésű sportrendezvény</option>
+                <option value="external">Külső szervezésű rendezvény</option>
               </select>
-
-              <!-- <div class="block sm:w-3/4 w-full mt-2 sm:mt-0 space-y-0">
-                <label class="flex items-center"><input v-model="formData.eventType" class="mr-2" type="radio"
-                    value="university"> Egyetemi szervezésű rendezvények</label>
-                <label class="flex items-center"><input v-model="formData.eventType" class="mr-2" type="radio"
-                    value="student"> Hallgatói rendezvények</label>
-                <label class="flex items-center"><input v-model="formData.eventType" class="mr-2" type="radio"
-                    value="external"> Külső szervezésű rendezvények</label>
-                <label class="flex items-center"><input v-model="formData.eventType" class="mr-2" type="radio"
-                    value="sports"> Sportrendezvények</label>
-              </div> -->
             </div>
             <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
               <div class="sm:w-1/3 w-full font-medium text-black text-base">Rendezvény minősítése <span
@@ -307,6 +471,14 @@ const goToStep = (step) => {
                 rows="3" />
             </div>
             <div class="sm:w-3/4 w-full text-sm text-gray-500 mt-1">Csatolva is megfelelő, ha nem tudja megadni.</div>
+            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+              <div class="sm:w-1/3 w-full font-medium text-black text-base">Helyszín berendezési módja (kiválasztás) <span
+                  class="text-red-600">*</span></div>
+              <div class="block sm:w-3/4 w-full mt-2 sm:mt-0 space-y-0">
+                <label class="flex items-center"><input v-model="formData.specifics.venueSetupService" type="radio" value="uniwork" class="mr-2"> Igénybe veszem az Uniwork diákmunka szolgáltatást a berendezéshez</label>
+                <label class="flex items-center"><input v-model="formData.specifics.venueSetupService" type="radio" value="self" class="mr-2"> Saját úton rendezem be a termet</label>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -349,6 +521,14 @@ const goToStep = (step) => {
               <Textarea v-model="formData.logistics.parkingDetails"
                 class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0"
                 rows="3" />
+            </div>
+            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+              <div class="sm:w-1/3 w-full font-medium text-black text-base">Portaszolgálat igénylése a rendezvény idejére <span
+                  class="text-red-600">*</span></div>
+              <div class="block sm:w-3/4 w-full mt-2 sm:mt-0 space-y-0">
+                <label class="flex items-center"><input v-model="formData.logistics.securityServiceNeeded" type="radio" value="yes" class="mr-2"> Igen</label>
+                <label class="flex items-center"><input v-model="formData.logistics.securityServiceNeeded" type="radio" value="no" class="mr-2"> Nem</label>
+              </div>
             </div>
           </div>
         </div>
@@ -490,6 +670,22 @@ const goToStep = (step) => {
             </div>
             <div v-if="formData.additionalRequirements.cateringNeeded === 'yes'"
               class="sm:w-3/4 w-full text-sm text-gray-500 mt-1">Egyetemi catering partnerekkel egyeztetünk.</div>
+            <div v-if="isInternalEvent()" class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+              <div class="sm:w-1/3 w-full font-medium text-black text-base">Szerepeljen a rendezvény a heti eseményajánlóban? (közösségi média) <span
+                  class="text-red-600">*</span></div>
+              <div class="block sm:w-3/4 w-full mt-2 sm:mt-0 space-y-0">
+                <label class="flex items-center"><input v-model="formData.additionalRequirements.includeInEventRecommendation" type="radio" value="yes" class="mr-2"> Igen</label>
+                <label class="flex items-center"><input v-model="formData.additionalRequirements.includeInEventRecommendation" type="radio" value="no" class="mr-2"> Nem</label>
+              </div>
+            </div>
+            <div v-if="isInternalEvent()" class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+              <div class="sm:w-1/3 w-full font-medium text-black text-base">Szerepeljen a rendezvény a központi rendezvénynaptárban? (uni.sze.hu) <span
+                  class="text-red-600">*</span></div>
+              <div class="block sm:w-3/4 w-full mt-2 sm:mt-0 space-y-0">
+                <label class="flex items-center"><input v-model="formData.additionalRequirements.includeInCentralCalendar" type="radio" value="yes" class="mr-2"> Igen</label>
+                <label class="flex items-center"><input v-model="formData.additionalRequirements.includeInCentralCalendar" type="radio" value="no" class="mr-2"> Nem</label>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -753,6 +949,11 @@ const goToStep = (step) => {
               <TextInput v-model="formData.organizerDetails.address"
                 class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
             </div>
+            <div v-if="isInternalEvent()" class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+              <div class="sm:w-1/3 w-full font-medium text-black text-base">Munkaszám <span class="text-red-600">*</span></div>
+              <TextInput v-model="formData.organizerDetails.workNumber"
+                class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
+            </div>
             <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
               <div class="sm:w-1/3 w-full font-medium text-black text-base">További szervező van? <span
                   class="text-red-600">*</span></div>
@@ -789,107 +990,102 @@ const goToStep = (step) => {
                   class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
               </div>
               <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-                <div class="sm:w-1/3 w-full font-medium text-black text-base">Lakcím <span class="text-red-600">*</span>
-                </div>
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Lakcím <span
+                    class="text-red-600">*</span></div>
                 <TextInput v-model="formData.organizerDetails.additionalOrganizerDetails.address"
                   class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
               </div>
             </div>
-            <div class="p-6">
-              <div class="font-bold text-lg text-black">Megrendelő (jogi háttér esetén)</div>
-            </div>
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">Név/Cégnév <span
-                  class="text-red-600">*</span></div>
-              <TextInput v-model="formData.clientDetails.name"
-                class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
-            </div>
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">Cím <span class="text-red-600">*</span>
+            <div v-if="isExternalEvent()" class="space-y-6">
+              <div class="p-6">
+                <div class="font-bold text-lg text-black">Megrendelő (jogi háttér esetén)</div>
               </div>
-              <TextInput v-model="formData.clientDetails.address"
-                class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
-            </div>
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">Adószám <span class="text-red-600">*</span>
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Név/cégnév <span
+                    class="text-red-600">*</span></div>
+                <TextInput v-model="formData.clientDetails.name"
+                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
               </div>
-              <TextInput v-model="formData.clientDetails.taxNumber"
-                class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
-            </div>
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">Telefonszám <span
-                  class="text-red-600">*</span></div>
-              <TextInput v-model="formData.clientDetails.phone" type="tel"
-                class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
-            </div>
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">E-mail cím <span
-                  class="text-red-600">*</span></div>
-              <TextInput v-model="formData.clientDetails.email" type="email"
-                class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
-            </div>
-            <div class="p-6">
-              <div class="font-bold text-lg text-black">Fájlfeltöltés és egyezmények</div>
-            </div>
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">
-                Rendezvénybejelentő nyomtatvány <span class="text-red-600">*</span>
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Cím <span
+                    class="text-red-600">*</span></div>
+                <TextInput v-model="formData.clientDetails.address"
+                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
               </div>
-              <div class="sm:w-3/4 w-full">
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Adószám <span
+                    class="text-red-600">*</span></div>
+                <TextInput v-model="formData.clientDetails.taxNumber"
+                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
+              </div>
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Telefonszám <span
+                    class="text-red-600">*</span></div>
+                <TextInput v-model="formData.clientDetails.phone" type="tel"
+                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
+              </div>
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">E-mail cím <span
+                  class="text-red-600">*</span></div>
+                <TextInput v-model="formData.clientDetails.email" type="email"
+                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
+              </div>
+            </div>
+            <div class="space-y-6">
+              <div class="p-6">
+                <div class="font-bold text-lg text-black">Csatolmányok</div>
+              </div>
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Rendezvénybejelentő nyomtatvány <span
+                    class="text-red-600">*</span></div>
                 <input type="file" @change="formData.fileUploads.eventNotificationForm = $event.target.files[0]"
-                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black w-full mt-2 sm:mt-0" />
-                <div class="text-sm text-gray-500 mt-1">Max. méret 6Mb</div>
+                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
               </div>
-            </div>
-
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">
-                Helyszín berendezési rajz (opcionális)
-              </div>
-              <div class="sm:w-3/4 w-full">
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Helyszín alaprajza</div>
                 <input type="file" @change="formData.fileUploads.venueLayout = $event.target.files[0]"
-                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black w-full mt-2 sm:mt-0" />
-                <div class="text-sm text-gray-500 mt-1">Max. méret 6Mb</div>
+                  class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black block sm:w-3/4 w-full mt-2 sm:mt-0" />
               </div>
             </div>
-
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">
-                Adatkezelési hozzájárulás <span class="text-red-600">*</span>
+            <div class="space-y-6">
+              <div class="p-6">
+                <div class="font-bold text-lg text-black">Hozzájárulások</div>
               </div>
-              <div class="sm:w-3/4 w-full">
-                <label class="flex items-center rounded-md p-2 text-black w-full mt-2 sm:mt-0">
-                  <input v-model="formData.agreements.dataProtection" type="checkbox" class="mr-2"> Elfogadom
-                </label>
-                <div class="text-sm text-gray-500 mt-1">
-                  Az űrlap kitöltésével büntetőjogi felelősségem tudatában kijelentem, hogy az adatok valósak, és
-                  hozzájárulok az adatkezeléshez a 1992. évi LXIII. törvény szerint.
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Adatkezelési hozzájárulás <span
+                    class="text-red-600">*</span></div>
+                <div class="block sm:w-3/4 w-full mt-2 sm:mt-0 space-y-0">
+                  <label class="flex items-center">
+                    <input v-model="formData.agreements.dataProtection" type="checkbox" class="mr-2">
+                    Hozzájárulok az adatkezeléshez
+                  </label>
+                </div>
+              </div>
+              <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
+                <div class="sm:w-1/3 w-full font-medium text-black text-base">Rendezvényszabályzat elfogadása <span
+                    class="text-red-600">*</span></div>
+                <div class="block sm:w-3/4 w-full mt-2 sm:mt-0 space-y-0">
+                  <label class="flex items-center">
+                    <input v-model="formData.agreements.eventRegulations" type="checkbox" class="mr-2">
+                    Elfogadom a rendezvényszabályzatot
+                  </label>
                 </div>
               </div>
             </div>
-
-            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-              <div class="sm:w-1/3 w-full font-medium text-black text-base">
-                Rendezvényszabályzat elfogadása <span class="text-red-600">*</span>
-              </div>
-              <div class="sm:w-3/4 w-full">
-                <label class="flex items-centerrounded-md p-2 text-black w-full mt-2 sm:mt-0">
-                  <input v-model="formData.agreements.eventRegulations" type="checkbox" class="mr-2"> Elfogadom
-                </label>
-                <div class="text-sm text-gray-500 mt-1">
-                  A szabályzat <a href="https://munkatars.sze.hu/downloadmanager/details/id/43020/m/13936"
-                    target="_blank" class="text-blue-500">ide kattintva</a> érhető el.
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
 
         <div class="flex justify-between mt-6">
-          <PrimaryButton @click="prevStep" v-if="currentStep > 0">Előző</PrimaryButton>
-          <PrimaryButton @click="nextStep" v-if="currentStep < totalSteps - 1" class="ml-auto">Következő</PrimaryButton>
-          <PrimaryButton @click="send" v-if="currentStep === totalSteps - 1" class="ml-auto">Beküldés</PrimaryButton>
+          <PrimaryButton v-if="currentStep > 0" @click="prevStep" class="bg-gray-500 hover:bg-gray-600">
+            Előző
+          </PrimaryButton>
+          <div v-else></div>
+          <PrimaryButton v-if="currentStep < totalSteps - 1" @click="nextStep" class="bg-blue-500 hover:bg-blue-600">
+            Következő
+          </PrimaryButton>
+          <PrimaryButton v-else @click="send" class="bg-green-500 hover:bg-green-600">
+            Küldés
+          </PrimaryButton>
         </div>
       </FormLayout>
     </div>
