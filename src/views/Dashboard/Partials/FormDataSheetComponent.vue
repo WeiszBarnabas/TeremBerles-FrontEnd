@@ -18,8 +18,8 @@ defineProps(['form'])
 
     <h2 class="text-2xl font-semibold text-gray-700 mb-4">Idő</h2>
     <ul class="space-y-2 mb-6">
-      <li><strong class="text-gray-700">Kezdete:</strong> {{ form.construction_start_date }} {{ form.construction_start_time.substring(0,form.construction_start_time.length-3) }}</li>
-      <li><strong class="text-gray-700">Vége:</strong> {{ form.construction_end_date }} {{ form.construction_end_time.substring(0,form.construction_start_time.length-3) }}</li>
+      <li><strong class="text-gray-700">Kezdete:</strong> {{ form.start_date }} {{ form.start_time.substring(0,form.start_time.length-3) }}</li>
+      <li><strong class="text-gray-700">Vége:</strong> {{ form.end_date }} {{ form.end_time.substring(0,form.start_time.length-3) }}</li>
     </ul>
 
    

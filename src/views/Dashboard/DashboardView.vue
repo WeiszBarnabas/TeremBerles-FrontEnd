@@ -36,7 +36,7 @@
                         </td>
                         <td class="p-4">
                             <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal">
-                                <InfoButton @click="showEventData(form)">Tovább</InfoButton>
+                                <InfoButton @click="showEventData(form.id)">Tovább</InfoButton>
                             </a>
                         </td>
                     </tr>
@@ -48,7 +48,7 @@
             <FormDataSheetComponent :form="actForm">
                 <template #buttons>
                     <div class="flex justify-around">
-                        <InfoButton @click="showEventData">Vissza</InfoButton>
+                        <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
                         <div>
                             <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
                             <InfoButton class="mx-3" @click="changeModalVisibility">Elutasítás</InfoButton>
@@ -104,7 +104,7 @@ const store = useUserStore()
 
 const setStatistic = () => {
     numOfEvents.value = forms.value.length
-    numOfNewEvents.value = forms.value.filter(x => x.status == "Beérkező").length
+    numOfNewEvents.value = forms.value.filter(x => x.status == "Beérkezett").length
     numOfAcceptedEvents.value = forms.value.filter(x => x.status == "Jóváhagyva").length
     numOfEndedEvents.value = forms.value.filter(x => x.status == "Lezárt").length
 }
@@ -116,12 +116,15 @@ const getForms = async () => {
 
 }
 
-const showEventData = (form) => {
-    if (form != null) {
-        actForm.value = form
-    }
+const showEventData = async (formId) => {
 
+    if (formId != -1){
+        let res = await axios.get("http://127.0.0.1:8000/api/form/" + formId, { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
+        actForm.value = res.data
+    }
+    
     showData.value = !showData.value
+    
 }
 
 const reject = async () => {
@@ -131,10 +134,8 @@ const reject = async () => {
         "reason": rejectReason.value,
     }
 
-    let res = await axios.post("http://127.0.0.1:8000/api/reject-form", data, { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
-
-    showEventData()
-
+    let res = await axios.patch("http://127.0.0.1:8000/api/reject-form", data, { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
+    rejectReason.value = ""
 }
 
 const changeModalVisibility = () => {
@@ -145,11 +146,11 @@ const save = () => {
     reject()
     changeModalVisibility()
     getForms()
-    showEventData()
+    showEventData(-1)
 }
 
 const acceptEvent = () => {
-    
+
 }
 
 onMounted(() => {
