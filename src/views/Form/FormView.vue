@@ -130,14 +130,14 @@ const verifyRecaptcha = async () => {
 const send = async () => {
   const recaptchaValue = await verifyRecaptcha();
 
-  if (recaptchaValue.success) {
+  // if (recaptchaValue.success) {
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/send-form", formData.value);
       console.log("Form submitted:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
-  }
+ // }
 };
 
 const nextStep = () => {
