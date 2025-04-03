@@ -13,18 +13,19 @@ let SavedForm = form.value
 
 const modify = () => {
   showInput.value = false;
-  SavedForm = form.value
+  SavedForm =  Object.assign({}, form.value)
   console.log(form.value)
 
 }
 
 const cancelEdit = () => {
+  form.value = Object.assign(form.value, SavedForm) 
   showInput.value = true;
 }
 
 const acceptEdit = () => {
-  SavedForm = form.value
   showInput.value = true;
+  
 }
 
 
@@ -45,7 +46,7 @@ const acceptEdit = () => {
         <div class="flex gap-3 items-center">
           <strong class="text-gray-700">Hely:</strong>
           <div v-if="showInput">
-            {{ SavedForm.event_place }}
+            {{ form.event_place }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify">
               <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
             </InfoButton>
