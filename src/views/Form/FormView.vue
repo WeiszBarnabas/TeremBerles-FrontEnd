@@ -356,8 +356,8 @@ const send = async () => {
             <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">
               <div class="sm:w-1/3 w-full font-medium text-black text-base">Rendezvény minősítése <span class="text-red-600">*</span></div>
               <div class="block sm:w-3/4 w-full mt-2 sm:mt-0 space-y-0">
-                <label class="flex items-center"><input v-model="formData.eventClassification" class="mr-2" type="radio" value="public"> Nyilvános</label>
-                <label class="flex items-center"><input v-model="formData.eventClassification" class="mr-2" type="radio" value="private"> Zártkörű</label>
+                <label class="flex items-center"><input v-model="formData.eventClassification" class="mr-2" type="radio" value="nyilvános"> Nyilvános</label>
+                <label class="flex items-center"><input v-model="formData.eventClassification" class="mr-2" type="radio" value="zártkörü"> Zártkörű</label>
               </div>
             </div>
             <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center">

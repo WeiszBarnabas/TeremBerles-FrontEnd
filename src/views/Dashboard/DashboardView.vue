@@ -46,10 +46,15 @@
 
         <div v-if="showData">
             <FormDataSheetComponent :form="actForm">
+                <template #backButton>
+                    <InfoButton class="px-4" @click="showEventData(-1)">
+                        <font-awesome-icon icon="fa-solid fa-x" />
+                    </InfoButton>
+                </template>
                 <template #buttons>
                     <div class="flex justify-around">
                         <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
-                        <div>
+                        <div v-show="actForm.status != 'Elutasítva'">
                             <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
                             <InfoButton class="mx-3" @click="changeModalVisibility">Elutasítás</InfoButton>
                             <InfoButton @click="">Módosítás</InfoButton>
@@ -118,13 +123,13 @@ const getForms = async () => {
 
 const showEventData = async (formId) => {
 
-    if (formId != -1){
+    if (formId != -1) {
         let res = await axios.get("http://127.0.0.1:8000/api/form/" + formId, { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
         actForm.value = res.data
     }
-    
+
     showData.value = !showData.value
-    
+
 }
 
 const reject = async () => {
@@ -149,8 +154,10 @@ const save = () => {
     showEventData(-1)
 }
 
-const acceptEvent = () => {
-
+const acceptEvent = async () => {
+    let res = await axios.patch("http://127.0.0.1:8000/api/accept-form", { "formId": actForm.value.id }, { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
+    getForms()
+    showEventData(-1)
 }
 
 onMounted(() => {
