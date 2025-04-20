@@ -6,6 +6,28 @@
         </template>
         <div v-if="!showData">
             <IncomeingFormsComponent>
+                <template #search>
+                    <div class="flex justify-end">
+                        <div class="flex w-2/5">
+                            <div class="relative w-full">
+                                <input type="search" id="search-dropdown"
+                                    class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                                    placeholder="Search Mockups, Logos, Design Templates..."
+                                    v-model="searchInput "/>
+                                <button @click="search"
+                                    class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                    <span class="sr-only">Search</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </template>
                 <template v-for="form in forms">
                     <tr class="hover:bg-gray-100">
                         <td class="p-4">
@@ -23,7 +45,7 @@
                         <td class="p-4">
                             <p
                                 class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                {{ form.created_at.split("T")[0].replaceAll("-", ".") }}
+                                {{ form.created_at.split("T")[0].replace(/-/g, ".") }}
                             </p>
                         </td>
                         <td class="p-4">
@@ -45,19 +67,18 @@
         </div>
 
         <div v-if="showData">
-            <FormDataSheetComponent :form="actForm">
+            <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token">
                 <template #backButton>
                     <InfoButton class="px-4" @click="showEventData(-1)">
-                        <font-awesome-icon icon="fa-solid fa-x" />
+                        Vissza
                     </InfoButton>
                 </template>
                 <template #buttons>
-                    <div class="flex justify-around">
+                    <div class="flex justify-end">
                         <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
                         <div v-show="actForm.status != 'Elutasítva'">
-                            <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
                             <InfoButton class="mx-3" @click="changeModalVisibility">Elutasítás</InfoButton>
-                            <InfoButton @click="">Módosítás</InfoButton>
+                            <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
                         </div>
                     </div>
                 </template>
@@ -96,6 +117,7 @@ import Modal from '../../components/Modal.vue';
 import Textarea from '../../components/Textarea.vue';
 
 const forms = ref();
+const searchInput = ref();
 const actForm = ref();
 const showData = ref(false);
 const showModal = ref(false);
@@ -133,14 +155,17 @@ const showEventData = async (formId) => {
 }
 
 const reject = async () => {
+    try {
+        let data = {
+            "formId": actForm.value.id,
+            "reason": rejectReason.value,
+        }
 
-    let data = {
-        "formId": actForm.value.id,
-        "reason": rejectReason.value,
+        let res = await axios.patch("http://127.0.0.1:8000/api/reject-form", data, { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
+        rejectReason.value = ""
+    } catch (error) {
+        console.error("Failed to reject the form:", error)
     }
-
-    let res = await axios.patch("http://127.0.0.1:8000/api/reject-form", data, { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
-    rejectReason.value = ""
 }
 
 const changeModalVisibility = () => {
