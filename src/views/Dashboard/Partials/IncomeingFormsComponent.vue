@@ -1,7 +1,5 @@
 <script setup>
 
-
-defineProps(["forms"])
 </script>
 
 <template>
@@ -34,15 +32,16 @@ defineProps(["forms"])
                         </p>
                     </th>
                     <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-                        <p
-                            class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-
-                        </p>
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="10" class="w-full p-3">
+                        <slot name="search" />
                     </th>
                 </tr>
             </thead>
             <tbody>
-               <slot/>
+                <slot />
             </tbody>
         </table>
     </div>
