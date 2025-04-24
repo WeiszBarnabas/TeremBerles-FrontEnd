@@ -47,7 +47,7 @@
         <div v-if="showData">
             <FormDataSheetComponent :form="actForm">
                 <template #backButton>
-                    <InfoButton class="px-4" @click="showEventData(-1)">
+                    <InfoButton class="px-4  " @click="showEventData(-1)">
                         <font-awesome-icon icon="fa-solid fa-x" />
                     </InfoButton>
                 </template>
