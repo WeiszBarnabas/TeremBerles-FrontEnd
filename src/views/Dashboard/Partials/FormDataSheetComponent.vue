@@ -31,7 +31,6 @@ const acceptEdit = async () => {
   }
 }
 
-
 </script>
 
 
@@ -175,7 +174,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.participants"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.participants }}
@@ -192,7 +192,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.press_public"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.press_public }}
@@ -209,7 +210,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.nature"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.nature }}
@@ -226,7 +228,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.program_plan"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.program_plan }}
@@ -243,7 +246,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.venue_setup"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.venue_setup }}
@@ -264,7 +268,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.accommodation_needed"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.accommodation_needed }}
@@ -281,7 +286,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.accommodation_count"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.accommodation_count }}
@@ -298,7 +304,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.parking_needed"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.parking_needed }}
@@ -315,7 +322,8 @@ const acceptEdit = async () => {
             <TextInput v-model="form.parking_details"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
           </div>
           <div v-else>
             {{ form.parking_details }}
@@ -325,81 +333,416 @@ const acceptEdit = async () => {
           </div>
         </div>
       </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Keletkező hulladék:</strong>
+          <div v-if="showInput == 17" class="flex gap-5">
+            <TextInput v-model="form.waste_generated"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.waste_generated }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(17)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Hulladékkezelés:</strong>
+          <div v-if="showInput == 18" class="flex gap-5">
+            <TextInput v-model="form.waste_disposal"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.waste_disposal }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(18)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Hulladékkezelő:</strong>
+          <div v-if="showInput == 19" class="flex gap-5">
+            <TextInput v-model="form.waste_handler"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.waste_handler }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(19)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Internet igény:</strong>
+          <div v-if="showInput == 20" class="flex gap-5">
+            <TextInput v-model="form.internet_needed"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.internet_needed }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(20)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Oktatástechnikai támogatás szükséges:</strong>
+          <div v-if="showInput == 21" class="flex gap-5">
+            <TextInput v-model="form.tech_supportNeeded"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.tech_supportNeeded }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(21)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Oktatástechnikai eszközigény:</strong>
+          <div v-if="showInput == 22" class="flex gap-5">
+            <TextInput v-model="form.tech_equipment"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.tech_equipment }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(22)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
     </ul>
 
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Logistics</h2>
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">További követelmények</h2>
     <ul class="space-y-2 mb-6">
-      <li><strong class="text-gray-700">Szállásigény:</strong> {{ form.accommodation_needed }}</li>
-      <li><strong class="text-gray-700">Szállásigény létszáma:</strong> {{ form.accommodation_count }}</li>
-      <li><strong class="text-gray-700">Parkolóhely igény:</strong> {{ form.parking_needed }}</li>
-      <li><strong class="text-gray-700">Gépkocsiforgalom és parkolóhely igény:</strong> {{ form.parking_details }}</li>
-      <li><strong class="text-gray-700">Waste Generated:</strong> {{ form.waste_generated }}</li>
-      <li><strong class="text-gray-700">Waste Disposal:</strong> {{ form.waste_disposal }}</li>
-      <li><strong class="text-gray-700">Waste Handler:</strong> {{ form.waste_handler }}</li>
-      <li><strong class="text-gray-700">Internet Needed:</strong> {{ form.internet_needed }}</li>
-      <li><strong class="text-gray-700">Tech Support Needed:</strong> {{ form.tech_supportNeeded }}</li>
-      <li><strong class="text-gray-700">Tech Equipment:</strong> {{ form.tech_equipment }}</li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Korlátozott mozgásképesség:</strong>
+          <div v-if="showInput == 23" class="flex gap-5">
+            <TextInput v-model="form.limited_mobility"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.limited_mobility }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(23)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Fotó/Videó felvétel:</strong>
+          <div v-if="showInput == 24" class="flex gap-5">
+            <TextInput v-model="form.photo_videoRecording"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.photo_videoRecording }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(24)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Felvételi eszközök:</strong>
+          <div v-if="showInput == 25" class="flex gap-5">
+            <TextInput v-model="form.recording_tools"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.recording_tools }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(25)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Catering szükséges:</strong>
+          <div v-if="showInput == 26" class="flex gap-5">
+            <TextInput v-model="form.catering_needed"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.catering_needed }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(26)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Catering típusa:</strong>
+          <div v-if="showInput == 27" class="flex gap-5">
+            <TextInput v-model="form.catering_type"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.catering_type }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(27)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Építési igény:</strong>
+          <div v-if="showInput == 28" class="flex gap-5">
+            <TextInput v-model="form.constructionNeeded"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.constructionNeeded }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(28)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Építési időpontok:</strong>
+          <div v-if="showInput == 29" class="flex gap-5">
+            <TextInput v-model="form.constructionDates"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.constructionDates }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(29)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Alvállalkozók:</strong>
+          <div v-if="showInput == 30" class="flex gap-5">
+            <TextInput v-model="form.subcontractors"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.subcontractors }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(30)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
     </ul>
 
-    <!-- <h2 class="text-2xl font-semibold text-gray-700 mb-4">Additional Requirements</h2>
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Biztonsági előírások</h2>
     <ul class="space-y-2 mb-6">
-      <li><strong class="text-gray-700">Limited Mobility:</strong> {{ form.limited_mobility }}</li>
-      <li><strong class="text-gray-700">Photo/Video Recording:</strong> {{ form.photo_videoRecording }}</li>
-      <li><strong class="text-gray-700">Recording Tools:</strong> {{ form.recording_tools }}</li>
-      <li><strong class="text-gray-700">Catering Needed:</strong> {{ form.catering_needed }}</li>
-      <li><strong class="text-gray-700">Catering Type:</strong> {{ form.catering_type }}</li>
-      <li><strong class="text-gray-700">Construction Needed:</strong> {{ form.constructionNeeded }}</li>
-      <li><strong class="text-gray-700">Construction Dates:</strong> {{ form.constructionDates }} to {{ form.constructionDates }}</li>
-      <li><strong class="text-gray-700">Subcontractors:</strong> {{ form.subcontractors }}</li>
-      <li><strong class="text-gray-700">High Altitude Work:</strong> {{ form.highAltitudeWork }}</li>
-      <li><strong class="text-gray-700">Scaffolding Needed:</strong> {{ form.scaffoldingNeeded }}</li>
-      <li><strong class="text-gray-700">Manual Material Handling:</strong> {{ form.manualMaterialHandling }}</li>
-      <li><strong class="text-gray-700">Mechanical Material Handling:</strong> {{ form.mechanicalMaterialHandling }}</li>
-      <li><strong class="text-gray-700">Mechanical Equipment:</strong> {{ form.mechanicalEquipment }}</li>
-      <li><strong class="text-gray-700">Cleaning Before:</strong> {{ form.cleaningBefore }}</li>
-      <li><strong class="text-gray-700">Cleaning During:</strong> {{ form.cleaningDuring }}</li>
-      <li><strong class="text-gray-700">Electrical Needed:</strong> {{ form.electricalNeeded }}</li>
-      <li><strong class="text-gray-700">Power Cabinet:</strong> {{ form.powerCabinet }}</li>
-      <li><strong class="text-gray-700">Power Demand:</strong> {{ form.powerDemand }}</li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Tűzveszély:</strong>
+          <div v-if="showInput == 31" class="flex gap-5">
+            <TextInput v-model="form.fire_hazard"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.fire_hazard }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(31)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Tevékenységek:</strong>
+          <div v-if="showInput == 32" class="flex gap-5">
+            <TextInput v-model="form.activities"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.activities }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(32)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Vegyi anyagok használata:</strong>
+          <div v-if="showInput == 33" class="flex gap-5">
+            <TextInput v-model="form.chemical_usage"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.chemical_usage }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(33)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Dekorációk:</strong>
+          <div v-if="showInput == 34" class="flex gap-5">
+            <TextInput v-model="form.chemical_description"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.chemical_description }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(34)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
     </ul>
 
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Safety Compliance</h2>
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Szervező adatai</h2>
     <ul class="space-y-2 mb-6">
-      <li><strong class="text-gray-700">Fire Hazard:</strong> {{ form.safetyCompliance.fireHazard }}</li>
-      <li><strong class="text-gray-700">Activities:</strong> {{ form.safetyCompliance.activities }}</li>
-      <li><strong class="text-gray-700">Chemical Usage:</strong> {{ form.safetyCompliance.chemicalUsage }}</li>
-      <li><strong class="text-gray-700">Decorations:</strong> {{ form.safetyCompliance.decorations }}</li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Név:</strong>
+          <div v-if="showInput == 35" class="flex gap-5">
+            <TextInput v-model="form.organizer_name"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.organizer_name }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(35)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Telefonszám:</strong>
+          <div v-if="showInput == 36" class="flex gap-5">
+            <TextInput v-model="form.organizer_phone"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.organizer_phone }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(36)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Email:</strong>
+          <div v-if="showInput == 37" class="flex gap-5">
+            <TextInput v-model="form.organizer_email"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.organizer_email }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(37)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
+      <li class="w-full">
+        <div class="flex gap-3 items-center">
+          <strong class="text-gray-700 w-1/3">Cím:</strong>
+          <div v-if="showInput == 38" class="flex gap-5">
+            <TextInput v-model="form.organizer_address"
+              class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            </InfoButton>
+          </div>
+          <div v-else>
+            {{ form.organizer_address }}
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(38)">
+              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+            </InfoButton>
+          </div>
+        </div>
+      </li>
     </ul>
-
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Organizer Details</h2>
-    <ul class="space-y-2 mb-6">
-      <li><strong class="text-gray-700">Name:</strong> {{ form.organizerDetails.name }}</li>
-      <li><strong class="text-gray-700">Phone:</strong> {{ form.organizerDetails.phone }}</li>
-      <li><strong class="text-gray-700">Email:</strong> {{ form.organizerDetails.email }}</li>
-      <li><strong class="text-gray-700">Address:</strong> {{ form.organizerDetails.address }}</li>
-    </ul>
-
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Client Details</h2>
-    <ul class="space-y-2 mb-6">
-      <li><strong class="text-gray-700">Name:</strong> {{ form.clientDetails.name }}</li>
-      <li><strong class="text-gray-700">Address:</strong> {{ form.clientDetails.address }}</li>
-      <li><strong class="text-gray-700">Tax Number:</strong> {{ form.clientDetails.taxNumber }}</li>
-      <li><strong class="text-gray-700">Phone:</strong> {{ form.clientDetails.phone }}</li>
-      <li><strong class="text-gray-700">Email:</strong> {{ form.clientDetails.email }}</li>
-    </ul>
-
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">File Uploads</h2>
-    <ul class="space-y-2 mb-6">
-      <li><strong class="text-gray-700">Event Notification Form:</strong> {{ form.fileUploads.eventNotificationForm || 'Not uploaded' }}</li>
-      <li><strong class="text-gray-700">Venue Layout:</strong> {{ form.fileUploads.venueLayout || 'Not uploaded' }}</li>
-    </ul>
-
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Agreements</h2>
-    <ul class="space-y-2">
-      <li><strong class="text-gray-700">Data Protection:</strong> {{ form.agreements.dataProtection ? 'Agreed' : 'Not agreed' }}</li>
-      <li><strong class="text-gray-700">Event Regulations:</strong> {{ form.agreements.eventRegulations ? 'Agreed' : 'Not agreed' }}</li>
-    </ul> -->
-
 
     <slot name="buttons" />
 
