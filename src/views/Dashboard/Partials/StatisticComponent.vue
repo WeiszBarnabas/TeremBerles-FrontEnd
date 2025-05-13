@@ -1,27 +1,30 @@
 <script setup>
-defineProps(["eventNumber","newEventNum","acceptedEventNum", "endedEventsNum"])
+defineProps(["eventNumber","newEventNum","acceptedEventNum"])
 
 </script>
 
 <template>
-    <div class="flex justify-around mb-8 ">
-        <div class="flex flex-col items-center shadow-lg rounded-md p-2 px-8 bg-extra" >
-            <h3>Összes</h3>
-            {{ eventNumber }}
+    <div class="w-full flex flex-col gap-6">
+        <div class="bg-blue-600 text-white rounded-lg shadow-lg p-6 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-semibold">Összes esemény</h3>
+                <span class="text-sm text-blue-200">Események száma</span>
+            </div>
+            <p class="text-6xl font-bold">{{ eventNumber }}</p>
         </div>
-        <div class="flex flex-col items-center shadow-lg rounded-md p-2 px-8 bg-extra" >
-            <h3>Lezárt</h3>
-            {{ endedEventsNum }}
+        <div class="bg-yellow-500 text-white rounded-lg shadow-lg p-6 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-semibold">Beérkezett</h3>
+                <span class="text-sm text-yellow-200">Új események</span>
+            </div>
+            <p class="text-6xl font-bold">{{ newEventNum }}</p>
         </div>
-        <div class="flex flex-col items-center shadow-lg rounded-md p-2 px-8 bg-extra" >
-            <h3>Beérkezett</h3>
-            {{ newEventNum }}
-        </div>
-        <div class="flex flex-col items-center shadow-lg rounded-md p-2 px-8 bg-extra" >
-            <h3>Jóváhagyva</h3>
-            {{ acceptedEventNum }}
+        <div class="bg-green-500 text-white rounded-lg shadow-lg p-6 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-semibold">Jóváhagyva</h3>
+                <span class="text-sm text-green-200">Elfogadott események</span>
+            </div>
+            <p class="text-6xl font-bold">{{ acceptedEventNum }}</p>
         </div>
     </div>
-
-
 </template>

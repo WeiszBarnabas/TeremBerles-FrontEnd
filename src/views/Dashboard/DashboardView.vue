@@ -2,7 +2,7 @@
     <DashboardLayout>
         <template v-if="!showData" #statistic>
             <StatisticComponent :eventNumber="numOfEvents" :newEventNum="numOfNewEvents"
-                :acceptedEventNum="numOfAcceptedEvents" :endedEventsNum="numOfEndedEvents" />
+                :acceptedEventNum="numOfAcceptedEvents" class="mb-5" />
         </template>
         <div v-if="!showData">
             <IncomeingFormsComponent>
@@ -10,7 +10,8 @@
                     <div class="flex justify-end">
                         <div class="flex w-2/5">
                             <div class="relative w-full">
-                                <TextInput class="block p-2.5 w-full z-20 text-gray-900 bg-extra" placeholder="Keresés" v-model="searchInput"/>
+                                <TextInput class="block p-2.5 w-full z-20" placeholder="Keresés" v-model="searchInput"
+                                    @change="search" />
                                 <button @click="search"
                                     class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +19,6 @@
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                     </svg>
-                                    <span class="sr-only">Search</span>
                                 </button>
                             </div>
                         </div>
@@ -28,33 +28,35 @@
                 <template v-for="form in forms">
                     <tr class="hover:bg-gray-100">
                         <td class="p-4">
-                            <p
-                                class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                            <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
                                 {{ form.id }}
                             </p>
                         </td>
-                        <td class="p-4">
-                            <p
-                                class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                        <td class="p-4 max-w-xs truncate">
+                            <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900 truncate"
+                                :title="form.event_name">
                                 {{ form.event_name }}
                             </p>
                         </td>
                         <td class="p-4">
-                            <p
-                                class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                {{ form.created_at.split("T")[0].replace(/-/g, ".") }}
-                            </p>
-                        </td>
-                        <td class="p-4">
-                            <div
-                                class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                            <div class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
                                 <div class="text-white bg-green-500 rounded-xl w-fit py-0.5 px-2">
                                     {{ form.status }}
                                 </div>
                             </div>
                         </td>
                         <td class="p-4">
-                            <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal">
+                            <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
+                                {{ form.event_address }}
+                            </p>
+                        </td>
+                        <td class="p-4">
+                            <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
+                                {{ form.start_date.split("T")[0].replace(/-/g, ".") }}
+                            </p>
+                        </td>
+                        <td class="p-4">
+                            <a href="#" class="block text-sm antialiased font-medium leading-tight">
                                 <InfoButton @click="showEventData(form.id)">Tovább</InfoButton>
                             </a>
                         </td>
@@ -65,11 +67,6 @@
 
         <div v-if="showData">
             <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token">
-                <template #backButton>
-                    <InfoButton class="px-4" @click="showEventData(-1)">
-                        Vissza
-                    </InfoButton>
-                </template>
                 <template #buttons>
                     <div class="flex justify-end">
                         <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
@@ -122,7 +119,6 @@ const showModal = ref(false);
 const numOfEvents = ref(0);
 const numOfNewEvents = ref(0);
 const numOfAcceptedEvents = ref(0);
-const numOfEndedEvents = ref(0);
 const rejectReason = ref("");
 
 const store = useUserStore()
@@ -131,14 +127,15 @@ const setStatistic = () => {
     numOfEvents.value = forms.value.length
     numOfNewEvents.value = forms.value.filter(x => x.status == "Beérkezett").length
     numOfAcceptedEvents.value = forms.value.filter(x => x.status == "Jóváhagyva").length
-    numOfEndedEvents.value = forms.value.filter(x => x.status == "Lezárt").length
 }
 
-const getForms = async () => {
-    let res = await axios.get("http://127.0.0.1:8000/api/forms", { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
+const getForms = async (search = "") => {
+    let res = await axios.get(`http://127.0.0.1:8000/api/forms/${search}`, { headers: { 'Authorization': `Bearer ${store.$state.user.data.token}` } })
     forms.value = res.data.data
-    setStatistic()
+    if (search == "") {
+        setStatistic()
 
+    }
 }
 
 const showEventData = async (formId) => {
@@ -183,8 +180,15 @@ const acceptEvent = async () => {
     showEventData(-1)
 }
 
+const search = async () => {
+    getForms(searchInput.value)
+}
+
 onMounted(() => {
     getForms();
+
 })
 
 </script>
+
+

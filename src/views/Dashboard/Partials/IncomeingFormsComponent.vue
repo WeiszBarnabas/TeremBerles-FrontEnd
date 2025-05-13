@@ -8,29 +8,34 @@
             <thead>
                 <tr>
                     <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-                        <p
-                            class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        <p class="block  text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
                             #
                         </p>
                     </th>
-                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-                        <p
-                            class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50 max-w-1/8">
+                        <p class="block  text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70 ">
                             Megnevezés
-                        </p>
-                    </th>
-                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-                        <p
-                            class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                            Létrehozva
                         </p>
                     </th>
                     <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50 ">
                         <p
-                            class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70 px-2">
+                            class="block  text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70 px-2">
                             Állapot
                         </p>
                     </th>
+                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50 ">
+                        <p
+                            class="block  text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70 px-2">
+                            Helyszín
+                        </p>
+                    </th>
+                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50 ">
+                        <p
+                            class="block  text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70 px-2">
+                            Időpont
+                        </p>
+                    </th>
+
                     <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                     </th>
                 </tr>
