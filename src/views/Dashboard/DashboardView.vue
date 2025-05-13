@@ -112,6 +112,7 @@ import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import InfoButton from '@/components/InfoButton.vue';
 import Modal from '../../components/Modal.vue';
 import Textarea from '../../components/Textarea.vue';
+import TextInput from '@/components/TextInput.vue';
 
 const forms = ref();
 const searchInput = ref();
