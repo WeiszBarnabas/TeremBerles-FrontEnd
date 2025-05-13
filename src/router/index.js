@@ -4,6 +4,7 @@ import FormView from '../views/Form/FormView.vue'
 import LoginView from '@/views/LoginView.vue'
 import DashboardView from '@/views/Dashboard/DashboardView.vue'
 import { useUserStore } from '@/stores/userStore'
+import PriceTableView from '@/views/Dashboard/PriceTableView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,12 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
+      beforeEnter: checkAccess
+    },
+    {
+      path: '/dashboard/artabla',
+      name: 'artabla',
+      component: PriceTableView,
       beforeEnter: checkAccess
     },
   ],

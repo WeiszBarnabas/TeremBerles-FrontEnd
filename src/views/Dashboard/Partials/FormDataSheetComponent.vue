@@ -1,13 +1,32 @@
 <script setup>
+import Dropdown from '@/components/Dropdown.vue';
+import DropdownLink from '@/components/DropdownLink.vue';
 import InfoButton from '@/components/InfoButton.vue';
 import TextInput from '@/components/TextInput.vue';
 import axios from 'axios';
 import { ref } from 'vue';
+import AddUserModal from './AddUserModal.vue';
 
 const props = defineProps(['form', 'token'])
 const showInput = ref(0)
 const form = ref(props.form);
 let SavedForm = form.value
+const showUserModal = ref(false)
+
+const closeModal = () => {
+ showUserModal.value = false
+};
+
+const openAddUser = () => {
+ showUserModal.value = true
+};
+
+
+
+
+const downloadPdf = () => {
+    
+};
 
 const modify = (modifyNum) => {
   showInput.value = modifyNum;
@@ -38,7 +57,25 @@ const acceptEdit = async () => {
   <div class="event-details p-8 bg-gray-50 rounded-lg shadow-md">
     <div class="flex justify-between">
       <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ form.event_name }}</h1>
-      <slot name="backButton" />
+      <div>
+        <div class="flex">
+          <Dropdown align="right" width="48">
+            <template #trigger>
+              <span class="inline-flex rounded-md">
+                <button type="button"
+                  class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-extra focus:outline-none transition ease-in-out duration-150">
+                  ...
+                </button>
+              </span>
+            </template>
+
+            <template #content>
+              <DropdownLink @click="openAddUser">Felhasználó hozzáadása </DropdownLink>
+              <DropdownLink @click="downloadPdf">PDF letölés</DropdownLink>
+            </template>
+          </Dropdown>
+        </div>
+      </div>
     </div>
 
     <p class="text-gray-600 mb-6">{{ form.description }}</p>
@@ -165,7 +202,7 @@ const acceptEdit = async () => {
       </li>
     </ul>
 
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Specifics</h2>
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Részletek</h2>
     <ul class="space-y-2 mb-6">
       <li class="w-full">
         <div class="flex gap-3 items-center">
@@ -747,4 +784,7 @@ const acceptEdit = async () => {
     <slot name="buttons" />
 
   </div>
+
+  <AddUserModal :showUserModal="showUserModal" @close="closeModal" />
+  
 </template>
