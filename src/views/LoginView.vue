@@ -38,7 +38,7 @@ const store = useUserStore();
 const login = async () => {
 
     let data = {
-        "email": "albert@kazmer.com",
+        "email": email.value,
         "password": "jelszo1"
     }
 

@@ -1,6 +1,5 @@
 <script setup>
 import InfoButton from '@/components/InfoButton.vue';
-import Modal from '@/components/Modal.vue';
 import TextInput from '@/components/TextInput.vue';
 import { ref } from 'vue';
 
@@ -8,20 +7,20 @@ const props = defineProps(['showUserModal'])
 const emit = defineEmits(['close'])
 
 const users = ref([
-    { id: 1, name: 'Kiss János', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 2, name: 'Nagy Anna', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 3, name: 'Tóth Béla', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 4, name: 'Szabó Éva', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
-    { id: 5, name: 'Varga Péter', image: 'https://cdn.discordapp.com/attachments/1268493707515002882/1340461806350762085/crying-cat-meme-template-full-719a53dc.webp?ex=681f3597&is=681de417&hm=132e55cd3c40f7372a8b94b55120e27e7e5654343a4317eb4d3b53e37c9639d5&' },
+    { id: 1, name: 'Kiss János', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 2, name: 'Nagy Anna', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 3, name: 'Tóth Béla', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 4, name: 'Szabó Éva', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
+    { id: 5, name: 'Varga Péter', image: 'https://as2.ftcdn.net/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.webp' },
 ]);
 
 const selectedUsers = ref([]);

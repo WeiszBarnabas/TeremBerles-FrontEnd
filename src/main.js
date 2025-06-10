@@ -1,5 +1,5 @@
 import './assets/main.css'
-
+import 'flowbite'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { library } from '@fortawesome/fontawesome-svg-core';

@@ -14,18 +14,39 @@ let SavedForm = form.value
 const showUserModal = ref(false)
 
 const closeModal = () => {
- showUserModal.value = false
+  showUserModal.value = false
 };
 
 const openAddUser = () => {
- showUserModal.value = true
+  showUserModal.value = true
 };
 
 
 
 
-const downloadPdf = () => {
-    
+const downloadPdf = async (id) => {
+  try {
+    let res = await axios.get(`http://127.0.0.1:8000/api/generate-pdf/${id}`, { headers: { 'Authorization': `Bearer ${props.token}`, responseType: 'blob' } })
+      .then((response) => {
+
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+
+        var fileLink = document.createElement('a');
+
+        fileLink.href = fileURL;
+
+        fileLink.setAttribute('download', 'file.pdf');
+
+        document.body.appendChild(fileLink);
+
+
+
+        fileLink.click();
+
+      });
+  } catch (error) {
+    console.error('Error during download:', error);
+  }
 };
 
 const modify = (modifyNum) => {
@@ -63,7 +84,7 @@ const acceptEdit = async () => {
             <template #trigger>
               <span class="inline-flex rounded-md">
                 <button type="button"
-                  class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-extra focus:outline-none transition ease-in-out duration-150">
+                  class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-extra focus:outline-none transition ease-in-out duration-150 cursor-pointer">
                   ...
                 </button>
               </span>
@@ -71,7 +92,9 @@ const acceptEdit = async () => {
 
             <template #content>
               <DropdownLink @click="openAddUser">Felhasználó hozzáadása </DropdownLink>
-              <DropdownLink @click="downloadPdf">PDF letölés</DropdownLink>
+              <!-- <DropdownLink @click="downloadPdf(form.id)">PDF letölés</DropdownLink> -->
+              <a :href="'http://127.0.0.1:8000/api/generate-pdf/'+form.id"><DropdownLink >PDF letölés</DropdownLink></a>
+              
             </template>
           </Dropdown>
         </div>
@@ -786,5 +809,5 @@ const acceptEdit = async () => {
   </div>
 
   <AddUserModal :showUserModal="showUserModal" @close="closeModal" />
-  
+
 </template>

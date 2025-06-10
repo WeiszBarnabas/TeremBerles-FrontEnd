@@ -36,6 +36,12 @@ const router = createRouter({
       component: PriceTableView,
       beforeEnter: checkAccess
     },
+    {
+      path: '/dashboard/jogosultsagok',
+      name: 'roles',
+      component: () => import("@/views/Dashboard/Role/RoleViewe.vue"),
+      beforeEnter: checkAccess
+    },
   ],
 })
 
