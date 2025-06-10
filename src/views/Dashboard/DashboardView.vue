@@ -65,12 +65,18 @@
             </IncomeingFormsComponent>
         </div>
 
+
+
         <div v-if="showData">
-            <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token">
+            <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token" :showModify="store.$state.user.data.user.role">
                 <template #buttons>
                     <div class="flex justify-end">
                         <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
-                        <div v-show="actForm.status != 'Elutasítva'">
+
+                        <div v-if="store.$state.user.data.user.role == 2">
+                            <InfoButton class="mx-3" @click="">Ajánlat készítés</InfoButton>
+                        </div>
+                        <div v-else v-show="actForm.status != 'Elutasítva'">
                             <InfoButton class="mx-3" @click="changeModalVisibility">Elutasítás</InfoButton>
                             <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
                         </div>
@@ -188,6 +194,7 @@ onMounted(() => {
     getForms();
 
 })
+
 
 </script>
 
