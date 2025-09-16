@@ -26,7 +26,7 @@ import NavLink from '@/components/NavLink.vue';
                                     ürlap
                                 </NavLink>
                                 <a href="/login" class="text-white rounded-md w-12 h-12 flex justify-center items-center hover:bg-gray-500">
-                                    <font-awesome-icon icon="fa-solid fa-user"/>
+                                    <span class="pi pi-user"></span>
                                 </a>
                             </div>
                         </div>

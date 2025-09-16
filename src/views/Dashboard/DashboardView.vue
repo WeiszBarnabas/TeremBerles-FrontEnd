@@ -118,7 +118,7 @@ import Textarea from '../../components/Textarea.vue';
 import TextInput from '@/components/TextInput.vue';
 
 const forms = ref();
-const searchInput = ref();
+const searchInput = ref("");
 const actForm = ref();
 const showData = ref(false);
 const showModal = ref(false);

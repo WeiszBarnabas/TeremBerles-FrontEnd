@@ -7,7 +7,8 @@ import axios from 'axios';
 import { ref } from 'vue';
 import AddUserModal from './AddUserModal.vue';
 
-const props = defineProps(['form', 'token', "showModify"])
+
+const props = defineProps(['form', 'token', "showModify",])
 const showInput = ref(0)
 const form = ref(props.form);
 let SavedForm = form.value
@@ -21,38 +22,20 @@ const openAddUser = () => {
   showUserModal.value = true
 };
 
-
-const downloadPdf = async (id) => {
-  try {
-    let res = await axios.get(`http://127.0.0.1:8000/api/generate-pdf/${id}`, { headers: { 'Authorization': `Bearer ${props.token}`, responseType: 'blob' } })
-      .then((response) => {
-
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-
-        var fileLink = document.createElement('a');
-
-        fileLink.href = fileURL;
-
-        fileLink.setAttribute('download', 'file.pdf');
-
-        document.body.appendChild(fileLink);
-
-
-
-        fileLink.click();
-
-      });
-  } catch (error) {
-    console.error('Error during download:', error);
-  }
-};
-
 const modify = (modifyNum) => {
   showInput.value = modifyNum;
   SavedForm = Object.assign({}, form.value)
   console.log(form.value)
 
 }
+
+const addCategory = () => {
+  if (newCategory.value) {
+    selectedCategories.value.push({ newcat: newCategory.value, duration: null, unit: '' });
+    newCategory.value = '';
+  }
+};
+
 
 const cancelEdit = () => {
   form.value = Object.assign(form.value, SavedForm)
@@ -76,17 +59,19 @@ const priceCategories = ref([]);
 const getPrices = async () => {
   let res = await axios.get(`http://127.0.0.1:8000/api/get-prices`, { headers: { 'Authorization': `Bearer ${props.token}` } })
   priceCategories.value = res.data.data
-};
 
-const addCategory = () => {
-  if (newCategory.value && !selectedCategories.value.some(sc => sc.category === newCategory.value)) {
-    selectedCategories.value.push({ category: newCategory.value, duration: null, unit: 'óra' });
-    newCategory.value = '';
-  }
+  priceCategories.value.map((x) => {
+    newCategory.value = Object.assign({},x) 
+    addCategory()
+  })
+
+  //selectedCategories.value = Object.assign([], priceCategories.value)
 };
 
 const removeCategory = (index) => {
+  console.log(selectedCategories.value)
   selectedCategories.value.splice(index, 1);
+  
 };
 
 if (props.showModify == 2) {
@@ -114,7 +99,6 @@ if (props.showModify == 2) {
 
             <template #content>
               <DropdownLink @click="openAddUser">Felhasználó hozzáadása </DropdownLink>
-              <!-- <DropdownLink @click="downloadPdf(form.id)">PDF letölés</DropdownLink> -->
               <a :href="'http://127.0.0.1:8000/api/generate-pdf/' + form.id">
                 <DropdownLink>PDF letölés</DropdownLink>
               </a>
@@ -134,14 +118,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 1" class="flex gap-5">
             <TextInput v-model="form.event_place"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.event_place }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(1)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -152,14 +136,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 2" class="flex gap-5">
             <TextInput v-model="form.event_address"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.event_address }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(2)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
 
@@ -171,14 +155,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 3" class="flex gap-5">
             <TextInput v-model="form.event_type"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.event_type }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(3)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -189,14 +173,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 4" class="flex gap-5">
             <TextInput v-model="form.event_classification"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.event_classification }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(4)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -213,15 +197,15 @@ if (props.showModify == 2) {
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <TextInput v-model="form.start_time" type="time"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.start_date.split("T")[0].replace(/-/g, ".") }}
             {{ form.start_time.substring(0, form.end_time.length - 3) }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(6)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -234,15 +218,15 @@ if (props.showModify == 2) {
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
             <TextInput v-model="form.end_time" type="time"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.end_date.split("T")[0].replace(/-/g, ".") }}
             {{ form.end_time.substring(0, form.end_time.length - 3) }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(7)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -257,14 +241,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 8" class="flex gap-5">
             <TextInput v-model="form.participants"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.participants }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(8)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -275,14 +259,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 9" class="flex gap-5">
             <TextInput v-model="form.press_public"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.press_public }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(9)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -293,14 +277,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 10" class="flex gap-5">
             <TextInput v-model="form.nature"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.nature }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(10)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -311,14 +295,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 11" class="flex gap-5">
             <TextInput v-model="form.program_plan"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.program_plan }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(11)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -329,14 +313,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 12" class="flex gap-5">
             <TextInput v-model="form.venue_setup"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.venue_setup }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(12)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -351,14 +335,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 13" class="flex gap-5">
             <TextInput v-model="form.accommodation_needed"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.accommodation_needed }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(13)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -369,14 +353,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 14" class="flex gap-5">
             <TextInput v-model="form.accommodation_count"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.accommodation_count }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(14)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -387,14 +371,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 15" class="flex gap-5">
             <TextInput v-model="form.parking_needed"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.parking_needed }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(15)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -405,14 +389,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 16" class="flex gap-5">
             <TextInput v-model="form.parking_details"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.parking_details }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(16)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -423,14 +407,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 17" class="flex gap-5">
             <TextInput v-model="form.waste_generated"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.waste_generated }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(17)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -441,14 +425,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 18" class="flex gap-5">
             <TextInput v-model="form.waste_disposal"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.waste_disposal }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(18)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -459,14 +443,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 19" class="flex gap-5">
             <TextInput v-model="form.waste_handler"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.waste_handler }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(19)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -477,14 +461,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 20" class="flex gap-5">
             <TextInput v-model="form.internet_needed"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.internet_needed }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(20)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -495,14 +479,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 21" class="flex gap-5">
             <TextInput v-model="form.tech_supportNeeded"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.tech_supportNeeded }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(21)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -513,14 +497,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 22" class="flex gap-5">
             <TextInput v-model="form.tech_equipment"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.tech_equipment }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(22)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -535,14 +519,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 23" class="flex gap-5">
             <TextInput v-model="form.limited_mobility"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.limited_mobility }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(23)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -553,14 +537,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 24" class="flex gap-5">
             <TextInput v-model="form.photo_videoRecording"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.photo_videoRecording }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(24)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -571,14 +555,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 25" class="flex gap-5">
             <TextInput v-model="form.recording_tools"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.recording_tools }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(25)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -589,14 +573,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 26" class="flex gap-5">
             <TextInput v-model="form.catering_needed"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.catering_needed }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(26)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -607,14 +591,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 27" class="flex gap-5">
             <TextInput v-model="form.catering_type"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.catering_type }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(27)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -625,14 +609,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 28" class="flex gap-5">
             <TextInput v-model="form.constructionNeeded"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.constructionNeeded }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(28)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -643,14 +627,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 29" class="flex gap-5">
             <TextInput v-model="form.constructionDates"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.constructionDates }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(29)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -661,14 +645,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 30" class="flex gap-5">
             <TextInput v-model="form.subcontractors"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.subcontractors }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(30)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -683,14 +667,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 31" class="flex gap-5">
             <TextInput v-model="form.fire_hazard"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.fire_hazard }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(31)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -701,14 +685,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 32" class="flex gap-5">
             <TextInput v-model="form.activities"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.activities }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(32)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -719,14 +703,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 33" class="flex gap-5">
             <TextInput v-model="form.chemical_usage"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.chemical_usage }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(33)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -737,14 +721,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 34" class="flex gap-5">
             <TextInput v-model="form.chemical_description"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.chemical_description }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(34)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -759,14 +743,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 35" class="flex gap-5">
             <TextInput v-model="form.organizer_name"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.organizer_name }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(35)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -777,14 +761,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 36" class="flex gap-5">
             <TextInput v-model="form.organizer_phone"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.organizer_phone }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(36)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -796,14 +780,14 @@ if (props.showModify == 2) {
           <div v-if="showInput == 37" class="flex gap-5">
             <TextInput v-model="form.organizer_email"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.organizer_email }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(37)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
@@ -814,62 +798,57 @@ if (props.showModify == 2) {
           <div v-if="showInput == 38" class="flex gap-5">
             <TextInput v-model="form.organizer_address"
               class="bg-gray-100 border border-gray-300 rounded-md p-2 text-black placeholder-gray-500 block min-w-xs mt-2 sm:mt-0" />
-            <InfoButton class="px-3 text-sm" @click="cancelEdit"><font-awesome-icon icon="fa-solid fa-x" /></InfoButton>
-            <InfoButton class="px-3 text-sm" @click="acceptEdit"><font-awesome-icon icon="fa-solid fa-check" />
+            <InfoButton class="px-3 text-sm" @click="cancelEdit"><i class="pi pi-times"></i></InfoButton>
+            <InfoButton class="px-3 text-sm" @click="acceptEdit"><i class="pi pi-check"></i>
             </InfoButton>
           </div>
           <div v-else>
             {{ form.organizer_address }}
             <InfoButton class="hover:bg-transparent py-1" @click="modify(38)" v-if="showModify != 2">
-              <font-awesome-icon class="text-secondary" icon="fa-solid fa-pen-to-square" />
+              <span class="pi pi-pen-to-square-"></span>
             </InfoButton>
           </div>
         </div>
       </li>
     </ul>
 
-    <div v-if="showModify == 2" class="mt-8">
-      <h2 class="text-2xl font-semibold text-gray-700 mb-4">Árajánlat adó</h2>
-      <ul class="space-y-2 mb-6">
-        <li class="w-full">
-          <div class="flex gap-6 items-center">
-            <strong class="text-gray-700 w-1/3">Árkategóriák:</strong>
-            <div class="flex gap-3 flex-1">
-              <select v-model="newCategory" class="border-2 border-gray-400 rounded p-2 w-2/3">
-                <option disabled value="">Válassz kategóriát</option>
-                <option v-for="cat in priceCategories" :key="cat" :value="cat">{{ cat.category }}</option>
+    <div v-if="showModify == 2" class="border-t">
+      <h2 class="text-2xl text-gray-700 mt-20 mb-20">Szolgáltatások </h2>
+      <ul class="grid gap-4 mb-6">
+        <li v-for="(item, idx) in selectedCategories"
+          class="bg-white rounded-lg shadow flex flex-col md:flex-row items-center p-4 gap-4">
+          <div class="flex-1 flex flex-col md:flex-row md:items-center gap-4 w-full">
+            <div class="font-semibold text-gray-700 md:w-1/4 w-full">{{ item.newcat.category }}</div>
+            <div class="flex flex-col justify-between md:flex-row md:items-center gap-2 flex-1">
+              <select v-model="item.newcat.unit" class="border border-gray-300 rounded px-3 py-2 w-1/3">
+                <option value="ora" hidden></option>
+                <option value="1">Nappal</option>
+                <option value="2">Éjszaja</option>
               </select>
-              <div class="flex-1 flex justify-end">
-                <button class="bg-blue-500 text-white px-4 py-2 rounded font-semibold" @click="addCategory"
-                  :disabled="!newCategory || selectedCategories.some(sc => sc.category === newCategory)">
-                  Hozzáadás
-                </button>
-              </div>
+              <span class="text-gray-500 text-sm whitespace-nowrap">{{ item.newcat.egyetem }} Ft/fő/óra</span>
+              <input type="number" min="1" v-model.number="item.newcat.duration"
+                class="border border-gray-300 rounded px-3 py-2 w-1/3" placeholder="Időtartam" />
+              <span class="text-gray-500 text-sm whitespace-nowrap">{{ item.newcat.egyetem * item.newcat.duration ? item.newcat.egyetem *
+                item.newcat.duration : "0" }} Ft</span>
             </div>
           </div>
+          <button class="text-red-500 hover:bg-red-100 rounded-full p-2 ml-auto" @click="removeCategory(idx)"
+            title="Törlés">
+            <i class="pi pi-trash"></i>
+          </button>
         </li>
-        <li v-for="(item, idx) in selectedCategories" class="w-full">
-          <div class="flex gap-6 items-center">
-            <strong class="text-gray-700 w-1/3">{{ item.category.category }}:</strong>
-            <div class="flex gap-3 flex-1 items-center">
-              <input type="number" min="1" v-model.number="item.duration"
-                class="border-2 border-gray-400 rounded p-2 min-w-[120px] w-[180px]" placeholder="Időtartam" />
-              <select v-model="item.unit" class="border-2 border-gray-400 rounded p-2 min-w-[120px] w-[180px]">
-                <option value="1">Egyetem</option>
-                <option value="2">Egyetem (Hétvége)</option>
-                <option value="3">Külső</option>
-                <option value="4">Külső (Hétvége)</option>
+        <li>
+            <div class="">
+              
+              <select v-model="newCategory" @change="addCategory" class="bg-white p-2">
+                <option value="" hidden>Szolgáltatások</option>
+                <option v-for="item in priceCategories" :value="item" >{{ item.category }}</option>
               </select>
-              <div class="flex-1 flex justify-end">
-                <button class="text-red-500 ml-2 px-3 py-2 rounded hover:bg-red-100" @click="removeCategory(idx)">
-                  <font-awesome-icon icon="fa-solid fa-trash" />
-                </button>
-              </div>
             </div>
-          </div>
         </li>
+
       </ul>
-    </div>
+    </div>  
 
     <slot name="buttons" />
 

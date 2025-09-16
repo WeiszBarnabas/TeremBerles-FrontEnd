@@ -121,7 +121,7 @@ const close = () => {
                             </div>
                         </div>
                         <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                            <div class="flex justify-end gap-4 mt-4">
+                            <div class="flex gap-4 mt-4">
                                 <InfoButton @click="close"
                                     class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:ring-4 focus:ring-gray-300">
                                     Mégsem
