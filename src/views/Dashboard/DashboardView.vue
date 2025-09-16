@@ -210,7 +210,6 @@ const createOffer = async () => {
 
         const formData = {
             formId: actForm.value.id,
-            status: 'Árajánlat kész',
             offer_data: JSON.stringify(selectedItems.value.map(item => ({
                 category: item.newcat?.category || item.category,
                 unit: item.unit === '1' ? 'day' : 'night',
@@ -222,7 +221,7 @@ const createOffer = async () => {
 
         console.log('Sending offer data:', formData);
 
-        const response = await axios.patch('http://127.0.0.1:8000/api/modify-form', formData, {
+        const response = await axios.post('http://127.0.0.1:8000/api/accept-famulus-offer', formData, {
             headers: {
                 'Authorization': `Bearer ${store.$state.user.data.token}`,
                 'Content-Type': 'application/json',
@@ -230,13 +229,7 @@ const createOffer = async () => {
             }
         });
 
-        if (response.data.success) {
-            alert('Az ajánlat sikeresen elkészült és elmentésre került!');
-            showEventData(-1);
-            getForms();
-        } else {
-            throw new Error(response.data.message || 'Ismeretlen hiba történt');
-        }
+        
     } catch (error) {
         console.error('Error creating offer:', error.response?.data || error.message);
         
