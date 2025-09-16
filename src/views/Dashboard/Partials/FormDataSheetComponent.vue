@@ -9,6 +9,7 @@ import AddUserModal from './AddUserModal.vue';
 
 
 const props = defineProps(['form', 'token', "showModify",])
+const emit = defineEmits(['update:selectedItems'])
 const showInput = ref(0)
 const form = ref(props.form);
 let SavedForm = form.value
@@ -31,8 +32,16 @@ const modify = (modifyNum) => {
 
 const addCategory = () => {
   if (newCategory.value) {
-    selectedCategories.value.push({ newcat: newCategory.value, duration: null, unit: '' });
+    const newItem = {
+      newcat: { ...newCategory.value },
+      duration: 1,
+      unit: '1',
+      price: newCategory.value.egyetem,
+      totalPrice: newCategory.value.egyetem * 1
+    };
+    selectedCategories.value.push(newItem);
     newCategory.value = '';
+    emitSelectedItems();
   }
 };
 
@@ -45,7 +54,23 @@ const cancelEdit = () => {
 const acceptEdit = async () => {
   showInput.value = 0;
   try {
-    let res = await axios.patch("http://127.0.0.1:8000/api/modify-form", form.value, { headers: { 'Authorization': `Bearer ${props.token}` } });
+    const priceData = selectedCategories.value.map(item => ({
+      category: item.newcat.category,
+      unit: item.unit,
+      duration: item.duration,
+      price: item.price * item.duration,
+      price_per_unit: item.price,
+      time_type: item.unit === '1' ? 'nappali' : 'esti'
+    }));
+
+    const formData = {
+      ...form.value,
+      price_data: priceData
+    };
+
+    let res = await axios.patch("http://127.0.0.1:8000/api/modify-form", formData, { 
+      headers: { 'Authorization': `Bearer ${props.token}` } 
+    });
     console.log('Edit successful:', res.data);
   } catch (error) {
     console.error('Error during edit:', error);
@@ -56,6 +81,52 @@ const newCategory = ref('');
 const selectedCategories = ref([]);
 const priceCategories = ref([]);
 
+const updatePrice = (item) => {
+  item.price = item.unit === '1' ? item.newcat.egyetem : item.newcat.egyetem_hetvege;
+  updateTotalPrice(item);
+};
+
+const updateTotalPrice = (item) => {
+  item.totalPrice = (item.price || 0) * (item.duration || 0);
+  emitSelectedItems();
+};
+
+const emitSelectedItems = () => {
+  try {
+    const itemsToEmit = selectedCategories.value.map(item => {
+      const price = item.unit === '1' 
+        ? (item.newcat?.egyetem || item.price || 0)
+        : (item.newcat?.egyetem_hetvege || item.price || 0);
+      
+      const duration = item.duration || 1;
+      
+      return {
+        ...item,
+        price: price,
+        totalPrice: price * duration,
+        category: item.newcat?.category || item.category
+      };
+    });
+    
+    emit('update:selectedItems', itemsToEmit);
+  } catch (error) {
+    console.error('Error in emitSelectedItems:', error);
+  }
+};
+
+const getPricePerUnit = (item) => {
+  try {
+    if (item.unit === '1') {
+      return item.newcat?.egyetem || item.price || 0;
+    } else {
+      return item.newcat?.egyetem_hetvege || item.price || 0;
+    }
+  } catch (error) {
+    console.error('Error in getPricePerUnit:', error);
+    return 0;
+  }
+};
+
 const getPrices = async () => {
   let res = await axios.get(`http://127.0.0.1:8000/api/get-prices`, { headers: { 'Authorization': `Bearer ${props.token}` } })
   priceCategories.value = res.data.data
@@ -64,14 +135,11 @@ const getPrices = async () => {
     newCategory.value = Object.assign({},x) 
     addCategory()
   })
-
-  //selectedCategories.value = Object.assign([], priceCategories.value)
 };
 
 const removeCategory = (index) => {
-  console.log(selectedCategories.value)
   selectedCategories.value.splice(index, 1);
-  
+  emitSelectedItems();
 };
 
 if (props.showModify == 2) {
@@ -813,23 +881,26 @@ if (props.showModify == 2) {
     </ul>
 
     <div v-if="showModify == 2" class="border-t">
-      <h2 class="text-2xl text-gray-700 mt-20 mb-20">Szolgáltatások </h2>
+      <h2 class="text-2xl text-gray-700 mt-20 mb-10">Szolgáltatások</h2>
       <ul class="grid gap-4 mb-6">
         <li v-for="(item, idx) in selectedCategories"
           class="bg-white rounded-lg shadow flex flex-col md:flex-row items-center p-4 gap-4">
           <div class="flex-1 flex flex-col md:flex-row md:items-center gap-4 w-full">
             <div class="font-semibold text-gray-700 md:w-1/4 w-full">{{ item.newcat.category }}</div>
             <div class="flex flex-col justify-between md:flex-row md:items-center gap-2 flex-1">
-              <select v-model="item.newcat.unit" class="border border-gray-300 rounded px-3 py-2 w-1/3">
-                <option value="ora" hidden></option>
+              <select v-model="item.unit" @change="updatePrice(item)" class="border border-gray-300 rounded px-3 py-2 w-1/3">
                 <option value="1">Nappal</option>
-                <option value="2">Éjszaja</option>
+                <option value="2">Éjszaka</option>
               </select>
-              <span class="text-gray-500 text-sm whitespace-nowrap">{{ item.newcat.egyetem }} Ft/fő/óra</span>
-              <input type="number" min="1" v-model.number="item.newcat.duration"
+              <span class="text-gray-500 text-sm whitespace-nowrap">
+                {{ getPricePerUnit(item) }} Ft/fő/{{ item.unit === '1' ? 'nappal' : 'éjszaka' }}
+              </span>
+              <input type="number" min="1" v-model.number="item.duration"
+                @input="updateTotalPrice(item)"
                 class="border border-gray-300 rounded px-3 py-2 w-1/3" placeholder="Időtartam" />
-              <span class="text-gray-500 text-sm whitespace-nowrap">{{ item.newcat.egyetem * item.newcat.duration ? item.newcat.egyetem *
-                item.newcat.duration : "0" }} Ft</span>
+              <span class="text-gray-500 text-sm whitespace-nowrap">
+                {{ (item.price * (item.duration || 0)).toLocaleString() }} Ft
+              </span>
             </div>
           </div>
           <button class="text-red-500 hover:bg-red-100 rounded-full p-2 ml-auto" @click="removeCategory(idx)"

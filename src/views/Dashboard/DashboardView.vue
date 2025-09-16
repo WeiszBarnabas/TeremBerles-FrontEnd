@@ -68,20 +68,28 @@
 
 
         <div v-if="showData">
-            <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token" :showModify="store.$state.user.data.user.role">
-                <template #buttons>
-                    <div class="flex justify-end">
-                        <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
-
-                        <div v-if="store.$state.user.data.user.role == 2">
-                            <InfoButton class="mx-3" @click="">Ajánlat készítés</InfoButton>
-                        </div>
-                        <div v-else v-show="actForm.status != 'Elutasítva'">
-                            <InfoButton class="mx-3" @click="changeModalVisibility">Elutasítás</InfoButton>
-                            <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
-                        </div>
+            <FormDataSheetComponent 
+                :form="actForm" 
+                :token="store.$state.user.data.token" 
+                :showModify="store.$state.user.data.user.role"
+                @update:selectedItems="(items) => selectedItems = items"
+            >
+            <template #buttons>
+                <div class="flex justify-end">
+                    <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
+                    
+                    <div v-if="store.$state.user.data.user.role == 2" class="ml-3">
+                        <InfoButton @click="createOffer" class="bg-blue-500 hover:bg-blue-600 text-white">
+                            Ajánlat készítés
+                        </InfoButton>
                     </div>
-                </template>
+                    
+                    <div v-else v-show="actForm.status != 'Elutasítva'" class="ml-3">
+                        <InfoButton class="mr-3" @click="changeModalVisibility">Elutasítás</InfoButton>
+                        <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
+                    </div>
+                </div>
+            </template>
             </FormDataSheetComponent>
         </div>
 
@@ -106,8 +114,9 @@
 
 <script setup>
 import { useUserStore } from '@/stores/userStore';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 import FormDataSheetComponent from './Partials/FormDataSheetComponent.vue';
 import IncomeingFormsComponent from '@/views/Dashboard/Partials/IncomeingFormsComponent.vue';
 import StatisticComponent from './Partials/StatisticComponent.vue';
@@ -117,17 +126,19 @@ import Modal from '../../components/Modal.vue';
 import Textarea from '../../components/Textarea.vue';
 import TextInput from '@/components/TextInput.vue';
 
-const forms = ref();
+const forms = ref([]);
 const searchInput = ref("");
-const actForm = ref();
+const actForm = ref({});
 const showData = ref(false);
 const showModal = ref(false);
+const rejectReason = ref("");
 const numOfEvents = ref(0);
 const numOfNewEvents = ref(0);
 const numOfAcceptedEvents = ref(0);
-const rejectReason = ref("");
+const selectedItems = ref([]);
 
 const store = useUserStore()
+const router = useRouter();
 
 const setStatistic = () => {
     numOfEvents.value = forms.value.length
@@ -186,15 +197,64 @@ const acceptEvent = async () => {
     showEventData(-1)
 }
 
-const search = async () => {
-    getForms(searchInput.value)
+const search = () => {
+    getForms(searchInput.value);
 }
+
+const createOffer = async () => {
+    try {
+        if (!selectedItems.value || selectedItems.value.length === 0) {
+            alert('Kérjük adjon hozzá szolgáltatásokat az ajánlathoz!');
+            return;
+        }
+
+        const formData = {
+            formId: actForm.value.id,
+            status: 'Árajánlat kész',
+            offer_data: JSON.stringify(selectedItems.value.map(item => ({
+                category: item.newcat?.category || item.category,
+                unit: item.unit === '1' ? 'day' : 'night',
+                duration: item.duration,
+                price_per_unit: item.unit === '1' ? item.newcat.egyetem : item.newcat.egyetem_hetvege,
+                total_price: (item.unit === '1' ? item.newcat.egyetem : item.newcat.egyetem_hetvege) * item.duration
+            })))
+        };
+
+        console.log('Sending offer data:', formData);
+
+        const response = await axios.patch('http://127.0.0.1:8000/api/modify-form', formData, {
+            headers: {
+                'Authorization': `Bearer ${store.$state.user.data.token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.data.success) {
+            alert('Az ajánlat sikeresen elkészült és elmentésre került!');
+            showEventData(-1);
+            getForms();
+        } else {
+            throw new Error(response.data.message || 'Ismeretlen hiba történt');
+        }
+    } catch (error) {
+        console.error('Error creating offer:', error.response?.data || error.message);
+        
+        let errorMessage = 'Hiba történt az ajánlat létrehozása során';
+        if (error.response?.data?.message) {
+            errorMessage = error.response.data.message;
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
+        
+        alert(`Hiba: ${errorMessage}`);
+    }
+};
 
 onMounted(() => {
     getForms();
 
 })
-
 
 </script>
 
