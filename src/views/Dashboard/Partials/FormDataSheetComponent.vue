@@ -6,21 +6,31 @@ import TextInput from '@/components/TextInput.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import AddUserModal from './AddUserModal.vue';
+import PrimaryButton from '@/components/PrimaryButton.vue';
+import ModifyReasonModal from './ModifyReasonModal.vue';
 
 
 const props = defineProps(['form', 'token', "showModify",])
 const emit = defineEmits(['update:selectedItems'])
+
 const showInput = ref(0)
 const form = ref(props.form);
 let SavedForm = form.value
 const showUserModal = ref(false)
+const showModifyReasonModal = ref(false)
 
 const closeModal = () => {
   showUserModal.value = false
+  showModifyReasonModal.value = false
+
 };
 
 const openAddUser = () => {
   showUserModal.value = true
+};
+
+const openModifyReason = () => {
+  showModifyReasonModal.value = true
 };
 
 const modify = (modifyNum) => {
@@ -68,8 +78,8 @@ const acceptEdit = async () => {
       price_data: priceData
     };
 
-    let res = await axios.patch("http://127.0.0.1:8000/api/modify-form", formData, { 
-      headers: { 'Authorization': `Bearer ${props.token}` } 
+    let res = await axios.patch("http://127.0.0.1:8000/api/modify-form", formData, {
+      headers: { 'Authorization': `Bearer ${props.token}` }
     });
     console.log('Edit successful:', res.data);
   } catch (error) {
@@ -94,12 +104,12 @@ const updateTotalPrice = (item) => {
 const emitSelectedItems = () => {
   try {
     const itemsToEmit = selectedCategories.value.map(item => {
-      const price = item.unit === '1' 
+      const price = item.unit === '1'
         ? (item.newcat?.egyetem || item.price || 0)
         : (item.newcat?.egyetem_hetvege || item.price || 0);
-      
+
       const duration = item.duration || 1;
-      
+
       return {
         ...item,
         price: price,
@@ -107,7 +117,7 @@ const emitSelectedItems = () => {
         category: item.newcat?.category || item.category
       };
     });
-    
+
     emit('update:selectedItems', itemsToEmit);
   } catch (error) {
     console.error('Error in emitSelectedItems:', error);
@@ -132,7 +142,7 @@ const getPrices = async () => {
   priceCategories.value = res.data.data
 
   priceCategories.value.map((x) => {
-    newCategory.value = Object.assign({},x) 
+    newCategory.value = Object.assign({}, x)
     addCategory()
   })
 };
@@ -144,6 +154,14 @@ const removeCategory = (index) => {
 
 if (props.showModify == 2) {
   getPrices()
+}
+
+
+
+const acceptOfferUni = async () => {
+  let res = await axios.post("http://127.0.0.1:8000/api/university-accept", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  location.reload();
+
 }
 
 </script>
@@ -176,6 +194,51 @@ if (props.showModify == 2) {
         </div>
       </div>
     </div>
+
+
+
+
+
+    <div v-if="form.status == 'UF Árajánlat elfogadásra vár'">
+
+      <div class="overflow-x-auto my-8">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Famulus árajánlat</h3>
+        <table class="min-w-full bg-white rounded-lg shadow">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-4 py-2 text-left text-gray-700 font-medium">Név</th>
+              <th class="px-4 py-2  text-gray-700 font-medium">Időtartam (óra)</th>
+              <th class="px-4 py-2  text-gray-700 font-medium">Egységár (Ft)</th>
+              <th class="px-4 py-2  text-gray-700 font-medium">Összesen (Ft)</th>
+              <th class="px-4 py-2  text-gray-700 font-medium">Éjszaka</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="offer in form.famulus_offers" :key="offer.id" class="border-b hover:bg-gray-50">
+              <td class="px-4 py-2">{{ offer.offer_name }}</td>
+              <td class="px-4 py-2">{{ offer.duration }}</td>
+              <td class="px-4 py-2">{{ offer.price_per_unit.toLocaleString() }}</td>
+              <td class="px-4 py-2">{{ offer.total_price.toLocaleString() }}</td>
+              <td class="px-4 py-2">
+                <span v-if="offer.night" class="text-green-400 font-bold">Igen</span>
+                <span v-else class="text-gray-500">Nem</span>
+              </td>
+            </tr>
+            <tr class="bg-gray-300">
+              <td class="px-4 py-2">Összesen</td>
+              <td class="px-4 py-2"></td>
+              <td class="px-4 py-2"></td>
+              <td class="px-4 py-2 font-semibold" colspan="2">{{ form.famulus_offer.toLocaleString() }} Forint</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="w-full flex justify-end gap-3">
+        <PrimaryButton @click="openModifyReason">Módosítás kérése</PrimaryButton>
+        <PrimaryButton class="bg-blue-600" @click="acceptOfferUni">Elfogadás</PrimaryButton>
+      </div>
+    </div>
+
 
     <p class="text-gray-600 mb-6">{{ form.description }}</p>
     <h2 class="text-2xl font-semibold text-gray-700 mb-4">Adatok</h2>
@@ -888,15 +951,15 @@ if (props.showModify == 2) {
           <div class="flex-1 flex flex-col md:flex-row md:items-center gap-4 w-full">
             <div class="font-semibold text-gray-700 md:w-1/4 w-full">{{ item.newcat.category }}</div>
             <div class="flex flex-col justify-between md:flex-row md:items-center gap-2 flex-1">
-              <select v-model="item.unit" @change="updatePrice(item)" class="border border-gray-300 rounded px-3 py-2 w-1/3">
+              <select v-model="item.unit" @change="updatePrice(item)"
+                class="border border-gray-300 rounded px-3 py-2 w-1/3">
                 <option value="1">Nappal</option>
                 <option value="2">Éjszaka</option>
               </select>
               <span class="text-gray-500 text-sm whitespace-nowrap">
                 {{ getPricePerUnit(item) }} Ft/fő/{{ item.unit === '1' ? 'nappal' : 'éjszaka' }}
               </span>
-              <input type="number" min="1" v-model.number="item.duration"
-                @input="updateTotalPrice(item)"
+              <input type="number" min="1" v-model.number="item.duration" @input="updateTotalPrice(item)"
                 class="border border-gray-300 rounded px-3 py-2 w-1/3" placeholder="Időtartam" />
               <span class="text-gray-500 text-sm whitespace-nowrap">
                 {{ (item.price * (item.duration || 0)).toLocaleString() }} Ft
@@ -909,22 +972,23 @@ if (props.showModify == 2) {
           </button>
         </li>
         <li>
-            <div class="">
-              
-              <select v-model="newCategory" @change="addCategory" class="bg-white p-2">
-                <option value="" hidden>Szolgáltatások</option>
-                <option v-for="item in priceCategories" :value="item" >{{ item.category }}</option>
-              </select>
-            </div>
+          <div class="">
+
+            <select v-model="newCategory" @change="addCategory" class="bg-white p-2">
+              <option value="" hidden>Szolgáltatások</option>
+              <option v-for="item in priceCategories" :value="item">{{ item.category }}</option>
+            </select>
+          </div>
         </li>
 
       </ul>
-    </div>  
+    </div>
 
-    <slot name="buttons" />
+    <slot v-if="form.famulus_offer == null" name="buttons" />
 
   </div>
 
+  <ModifyReasonModal :showModal="showModifyReasonModal" @close="closeModal" />
   <AddUserModal :showUserModal="showUserModal" @close="closeModal" />
 
 </template>

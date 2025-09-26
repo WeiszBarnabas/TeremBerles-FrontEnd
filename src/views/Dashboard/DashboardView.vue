@@ -68,28 +68,24 @@
 
 
         <div v-if="showData">
-            <FormDataSheetComponent 
-                :form="actForm" 
-                :token="store.$state.user.data.token" 
-                :showModify="store.$state.user.data.user.role"
-                @update:selectedItems="(items) => selectedItems = items"
-            >
-            <template #buttons>
-                <div class="flex justify-end">
-                    <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
-                    
-                    <div v-if="store.$state.user.data.user.role == 2" class="ml-3">
-                        <InfoButton @click="createOffer" class="bg-blue-500 hover:bg-blue-600 text-white">
-                            Ajánlat készítés
-                        </InfoButton>
+            <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token"
+                :showModify="store.$state.user.data.user.role" @update:selectedItems="(items) => selectedItems = items">
+                <template #buttons>
+                    <div class="flex justify-end">
+                        <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
+
+                        <div v-if="store.$state.user.data.user.role == 2" class="ml-3">
+                            <InfoButton @click="createOffer" class="bg-blue-500 hover:bg-blue-600 text-white">
+                                Ajánlat készítés
+                            </InfoButton>
+                        </div>
+
+                        <div v-else v-show="actForm.status != 'Elutasítva'" class="ml-3">
+                            <InfoButton class="mr-3" @click="changeModalVisibility">Elutasítás</InfoButton>
+                            <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
+                        </div>
                     </div>
-                    
-                    <div v-else v-show="actForm.status != 'Elutasítva'" class="ml-3">
-                        <InfoButton class="mr-3" @click="changeModalVisibility">Elutasítás</InfoButton>
-                        <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
-                    </div>
-                </div>
-            </template>
+                </template>
             </FormDataSheetComponent>
         </div>
 
@@ -210,13 +206,13 @@ const createOffer = async () => {
 
         const formData = {
             formId: actForm.value.id,
-            offer_data: JSON.stringify(selectedItems.value.map(item => ({
+            offer_data: selectedItems.value.map(item => ({
                 category: item.newcat?.category || item.category,
                 unit: item.unit === '1' ? 'day' : 'night',
                 duration: item.duration,
                 price_per_unit: item.unit === '1' ? item.newcat.egyetem : item.newcat.egyetem_hetvege,
                 total_price: (item.unit === '1' ? item.newcat.egyetem : item.newcat.egyetem_hetvege) * item.duration
-            })))
+            }))
         };
 
         console.log('Sending offer data:', formData);
@@ -228,18 +224,19 @@ const createOffer = async () => {
                 'Accept': 'application/json'
             }
         });
-
         
+        getForms();
+        showEventData(-1)
     } catch (error) {
         console.error('Error creating offer:', error.response?.data || error.message);
-        
+
         let errorMessage = 'Hiba történt az ajánlat létrehozása során';
         if (error.response?.data?.message) {
             errorMessage = error.response.data.message;
         } else if (error.message) {
             errorMessage = error.message;
         }
-        
+
         alert(`Hiba: ${errorMessage}`);
     }
 };
@@ -250,5 +247,3 @@ onMounted(() => {
 })
 
 </script>
-
-
