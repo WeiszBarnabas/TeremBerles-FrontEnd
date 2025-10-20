@@ -8,6 +8,7 @@ import { ref } from 'vue';
 import AddUserModal from './AddUserModal.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import ModifyReasonModal from './ModifyReasonModal.vue';
+import UniOfferPiceker from './DataSheetParts/UniOfferPiceker.vue';
 
 
 const props = defineProps(['form', 'token', "showModify",])
@@ -141,10 +142,30 @@ const getPrices = async () => {
   let res = await axios.get(`http://127.0.0.1:8000/api/get-prices`, { headers: { 'Authorization': `Bearer ${props.token}` } })
   priceCategories.value = res.data.data
 
-  priceCategories.value.map((x) => {
+  if (props.form.famulus_offers != null) {
+    priceCategories.value.map((x) => {
+      newCategory.value = Object.assign({}, x)
+      addCategory()
+    })
+
+    return
+
+  }
+
+
+  props.form.map((x) => {
     newCategory.value = Object.assign({}, x)
     addCategory()
   })
+
+
+
+
+
+
+
+
+
 };
 
 const removeCategory = (index) => {
@@ -160,8 +181,45 @@ if (props.showModify == 2) {
 
 const acceptOfferUni = async () => {
   let res = await axios.post("http://127.0.0.1:8000/api/university-accept", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+
   location.reload();
 
+}
+
+
+
+const showOffer = async () => {
+  //let res = await axios.post("http://127.0.0.1:8000/api/show-uni-offer", { "form": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  let res = await axios.post(
+    "http://127.0.0.1:8000/api/show-uni-offer",
+    { form: form.value.id },
+    {
+      headers: { Authorization: `Bearer ${props.token}` },
+      responseType: 'blob'
+    }
+  );
+
+  // Create a blob link to the PDF
+  const fileURL = URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+  window.open(fileURL, "_blank");
+
+
+}
+
+const reload = () => {
+  location.reload()
+}
+
+const acceptEvent = async () => {
+
+  let res = await axios.post("http://127.0.0.1:8000/api/accept-event", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  location.reload();
+}
+
+const modReq = async () => {
+
+  let res = await axios.post("http://127.0.0.1:8000/api/modify-request-event", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  location.reload();
 }
 
 </script>
@@ -255,8 +313,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.event_place }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(1)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent bg-amber py-1" @click="modify(1)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -273,8 +332,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.event_address }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(2)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(2)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
 
@@ -292,8 +352,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.event_type }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(3)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(3)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -310,8 +371,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.event_classification }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(4)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(4)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -335,8 +397,9 @@ const acceptOfferUni = async () => {
           <div v-else>
             {{ form.start_date.split("T")[0].replace(/-/g, ".") }}
             {{ form.start_time.substring(0, form.end_time.length - 3) }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(6)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(6)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -356,8 +419,9 @@ const acceptOfferUni = async () => {
           <div v-else>
             {{ form.end_date.split("T")[0].replace(/-/g, ".") }}
             {{ form.end_time.substring(0, form.end_time.length - 3) }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(7)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(7)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -378,8 +442,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.participants }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(8)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(8)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -396,8 +461,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.press_public }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(9)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(9)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -414,8 +480,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.nature }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(10)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(10)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -432,8 +499,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.program_plan }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(11)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(11)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -450,8 +518,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.venue_setup }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(12)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(12)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -472,8 +541,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.accommodation_needed }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(13)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(13)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -490,8 +560,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.accommodation_count }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(14)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(14)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -508,8 +579,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.parking_needed }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(15)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(15)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -526,8 +598,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.parking_details }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(16)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(16)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -544,8 +617,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.waste_generated }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(17)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(17)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -562,8 +636,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.waste_disposal }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(18)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(18)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -580,8 +655,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.waste_handler }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(19)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(19)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -598,8 +674,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.internet_needed }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(20)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(20)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -616,8 +693,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.tech_supportNeeded }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(21)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(21)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -634,8 +712,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.tech_equipment }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(22)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(22)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -656,8 +735,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.limited_mobility }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(23)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(23)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -674,8 +754,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.photo_videoRecording }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(24)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(24)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -692,8 +773,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.recording_tools }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(25)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(25)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -710,8 +792,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.catering_needed }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(26)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(26)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -728,8 +811,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.catering_type }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(27)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(27)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -746,8 +830,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.constructionNeeded }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(28)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(28)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -764,8 +849,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.constructionDates }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(29)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(29)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -782,8 +868,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.subcontractors }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(30)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(30)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -804,8 +891,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.fire_hazard }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(31)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(31)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -822,8 +910,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.activities }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(32)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(32)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -840,8 +929,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.chemical_usage }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(33)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(33)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -858,8 +948,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.chemical_description }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(34)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(34)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -880,8 +971,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.organizer_name }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(35)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(35)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -898,8 +990,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.organizer_phone }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(36)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(36)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -917,8 +1010,9 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.organizer_email }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(37)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(37)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
@@ -935,16 +1029,27 @@ const acceptOfferUni = async () => {
           </div>
           <div v-else>
             {{ form.organizer_address }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(38)" v-if="showModify != 2">
-              <span class="pi pi-pen-to-square-"></span>
+            <InfoButton class="hover:bg-transparent py-1" @click="modify(38)"
+              v-if="showModify != 2 && form.status == 'Beérkezett'">
+              <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
         </div>
       </li>
     </ul>
 
+
     <div v-if="showModify == 2" class="border-t">
       <h2 class="text-2xl text-gray-700 mt-20 mb-10">Szolgáltatások</h2>
+
+      <div v-if="form.comment != null" class=" bg-gray-300 p-10 rounded-2xl mb-5">
+        <span>Modosítás kérésének oka: </span>
+        {{ " " + form.comment }}
+
+      </div>
+
+
+
       <ul class="grid gap-4 mb-6">
         <li v-for="(item, idx) in selectedCategories"
           class="bg-white rounded-lg shadow flex flex-col md:flex-row items-center p-4 gap-4">
@@ -984,11 +1089,24 @@ const acceptOfferUni = async () => {
       </ul>
     </div>
 
-    <slot v-if="form.famulus_offer == null" name="buttons" />
+    <UniOfferPiceker v-if="form.status == 'Árajánlat készítésre vár'" :token="props.token" :formId="form.id"
+      @close="reload" />
+
+    <div class="w-full flex justify-end gap-3" v-if="form.status == 'Árajánlat elfogadásra vár'">
+
+      <PrimaryButton @click="showOffer">Árajánlat megtekintése</PrimaryButton>
+
+
+      <PrimaryButton @click="acceptEvent">Elfogadás</PrimaryButton>
+
+
+    </div>
+
+    <slot name="buttons" />
 
   </div>
 
-  <ModifyReasonModal :showModal="showModifyReasonModal" @close="closeModal" />
+  <ModifyReasonModal :token="token" :form="form.id" :showModal="showModifyReasonModal" @close="reload" />
   <AddUserModal :showUserModal="showUserModal" @close="closeModal" />
 
 </template>

@@ -68,6 +68,7 @@
 
 
         <div v-if="showData">
+            
             <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token"
                 :showModify="store.$state.user.data.user.role" @update:selectedItems="(items) => selectedItems = items">
                 <template #buttons>
@@ -80,7 +81,7 @@
                             </InfoButton>
                         </div>
 
-                        <div v-else v-show="actForm.status != 'Elutasítva'" class="ml-3">
+                        <div v-else v-show="actForm.status == 'Beérkezett'" class="ml-3">
                             <InfoButton class="mr-3" @click="changeModalVisibility">Elutasítás</InfoButton>
                             <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
                         </div>

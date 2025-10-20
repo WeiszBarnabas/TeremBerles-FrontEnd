@@ -1,9 +1,10 @@
 <script setup>
 import InfoButton from '@/components/InfoButton.vue';
 import TextInput from '@/components/TextInput.vue';
+import axios from 'axios';
 import { ref } from 'vue';
 
-const props = defineProps(['showModal'])
+const props = defineProps(['showModal','form', 'token'])
 const emit = defineEmits(['close'])
 
 const modifyReason = ref('');
@@ -13,7 +14,11 @@ const search = () => {
 
 };
 
-const save = () => {
+const save = async () => {
+
+    let res = await axios.post("http://127.0.0.1:8000/api/modify-request-event", { "formId": props.form, "reason": modifyReason.value }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+    
+    emit('close')
 
 }
 
@@ -42,7 +47,8 @@ const close = () => {
 
                                     <div class="overflow-x-auto max-h-[400px]">
                                         <h3>Módosítás leírás</h3>
-                                        <Textarea rows="10" class="w-full p-1 border border-gray-400" v-model="modifyReason" />
+                                        <textarea rows="10" class="w-full p-1 border border-gray-400"
+                                            v-model="modifyReason" ></textarea>
                                     </div>
                                 </div>
                             </div>
