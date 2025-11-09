@@ -5,27 +5,7 @@
                 :acceptedEventNum="numOfAcceptedEvents" class="mb-5" />
         </template>
         <div v-if="!showData">
-            <IncomeingFormsComponent>
-                <template #search>
-                    <div class="flex justify-end">
-                        <div class="flex w-2/5">
-                            <div class="relative w-full">
-                                <TextInput class="block p-2.5 w-full z-20" placeholder="Keresés" v-model="searchInput"
-                                    @change="search" />
-                                <button @click="search"
-                                    class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                </template>
-                <template v-for="form in forms">
+                <!-- <template v-for="form in forms">
                     <tr class="hover:bg-gray-100">
                         <td class="p-4">
                             <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
@@ -52,7 +32,7 @@
                         </td>
                         <td class="p-4">
                             <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
-                                {{ form.start_date.split("T")[0].replace(/-/g, ".") }}
+                                
                             </p>
                         </td>
                         <td class="p-4">
@@ -61,14 +41,15 @@
                             </a>
                         </td>
                     </tr>
-                </template>
-            </IncomeingFormsComponent>
+                </template> -->
+
+                <Crud :products="forms" class="max-w-full" @show="(id) =>{showEventData(id)}"/>
+
         </div>
 
 
 
         <div v-if="showData">
-            
             <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token"
                 :showModify="store.$state.user.data.user.role" @update:selectedItems="(items) => selectedItems = items">
                 <template #buttons>
@@ -115,13 +96,13 @@ import { onMounted, ref, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import FormDataSheetComponent from './Partials/FormDataSheetComponent.vue';
-import IncomeingFormsComponent from '@/views/Dashboard/Partials/IncomeingFormsComponent.vue';
+
 import StatisticComponent from './Partials/StatisticComponent.vue';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import InfoButton from '@/components/InfoButton.vue';
 import Modal from '../../components/Modal.vue';
 import Textarea from '../../components/Textarea.vue';
-import TextInput from '@/components/TextInput.vue';
+import Crud from '@/views/Dashboard/Partials/Crud.vue';
 
 const forms = ref([]);
 const searchInput = ref("");
@@ -160,7 +141,7 @@ const showEventData = async (formId) => {
     }
 
     showData.value = !showData.value
-
+    getForms()
 }
 
 const reject = async () => {

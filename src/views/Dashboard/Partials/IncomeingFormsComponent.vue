@@ -3,6 +3,8 @@
 </script>
 
 <template>
+
+
     <div class="relative flex flex-col w-full h-full text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
         <table class="w-full text-left table-auto min-w-max">
             <thead>
