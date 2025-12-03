@@ -5,45 +5,7 @@
                 :acceptedEventNum="numOfAcceptedEvents" class="mb-5" />
         </template>
         <div v-if="!showData">
-                <!-- <template v-for="form in forms">
-                    <tr class="hover:bg-gray-100">
-                        <td class="p-4">
-                            <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
-                                {{ form.id }}
-                            </p>
-                        </td>
-                        <td class="p-4 max-w-xs truncate">
-                            <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900 truncate"
-                                :title="form.event_name">
-                                {{ form.event_name }}
-                            </p>
-                        </td>
-                        <td class="p-4">
-                            <div class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
-                                <div class="text-white bg-green-500 rounded-xl w-fit py-0.5 px-2">
-                                    {{ form.status }}
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-4">
-                            <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
-                                {{ form.event_address }}
-                            </p>
-                        </td>
-                        <td class="p-4">
-                            <p class="block text-sm antialiased font-normal leading-tight text-blue-gray-900">
-                                
-                            </p>
-                        </td>
-                        <td class="p-4">
-                            <a href="#" class="block text-sm antialiased font-medium leading-tight">
-                                <InfoButton @click="showEventData(form.id)">Tovább</InfoButton>
-                            </a>
-                        </td>
-                    </tr>
-                </template> -->
-
-                <Crud :products="forms" class="max-w-full" @show="(id) =>{showEventData(id)}"/>
+            <Crud :products="forms" class="max-w-full" @show="(id) => { showEventData(id) }" />
 
         </div>
 
@@ -53,18 +15,16 @@
             <FormDataSheetComponent :form="actForm" :token="store.$state.user.data.token"
                 :showModify="store.$state.user.data.user.role" @update:selectedItems="(items) => selectedItems = items">
                 <template #buttons>
-                    <div class="flex justify-end">
-                        <InfoButton @click="showEventData(-1)">Vissza</InfoButton>
+                    <div class="flex justify-between">
+                        <Button label="Vissza" @click="showEventData(-1)" />
 
                         <div v-if="store.$state.user.data.user.role == 2" class="ml-3">
-                            <InfoButton @click="createOffer" class="bg-blue-500 hover:bg-blue-600 text-white">
-                                Ajánlat készítés
-                            </InfoButton>
+                            <Button label="Ajánlat készítés" @click="createOffer" />
                         </div>
 
                         <div v-else v-show="actForm.status == 'Beérkezett'" class="ml-3">
-                            <InfoButton class="mr-3" @click="changeModalVisibility">Elutasítás</InfoButton>
-                            <InfoButton @click="acceptEvent">Elfogadás</InfoButton>
+                            <Button class="mr-3" label="Elutasítás" @click="changeModalVisibility" />
+                            <Button label="Elfogadás" @click="acceptEvent" />
                         </div>
                     </div>
                 </template>
@@ -206,7 +166,7 @@ const createOffer = async () => {
                 'Accept': 'application/json'
             }
         });
-        
+
         getForms();
         showEventData(-1)
     } catch (error) {

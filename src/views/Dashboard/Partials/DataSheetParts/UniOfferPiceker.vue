@@ -89,7 +89,7 @@ const acceptOffer = async () => {
                         </p>
                     </div>
 
-                    <div class="flex flex-col md:flex-row items-center gap-4 flex-1">
+                    <div class="flex flex-col justify-end md:flex-row items-center gap-4 flex-1">
                         <input type="number" min="1" v-model.number="item.quantity"
                             class="border border-gray-300 rounded-lg px-4 py-2 w-32 focus:ring-2 focus:ring-indigo-400" />
 
@@ -130,7 +130,11 @@ const acceptOffer = async () => {
             <p class="text-xl font-bold">
                 Összesen (Bruttó): {{ grandTotal.toLocaleString() }} Ft
             </p>
-            <PrimaryButton @click="acceptOffer">Elfogadás</PrimaryButton>
+        </div>
+
+        <div class="flex justify-between ">
+            <slot/>
+            <Button label="Elfogadás" @click="acceptOffer"/>
         </div>
     </div>
 </template>

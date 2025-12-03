@@ -10,15 +10,25 @@ import PrimaryButton from '@/components/PrimaryButton.vue';
 import ModifyReasonModal from './ModifyReasonModal.vue';
 import UniOfferPiceker from './DataSheetParts/UniOfferPiceker.vue';
 
-
 const props = defineProps(['form', 'token', "showModify",])
 const emit = defineEmits(['update:selectedItems'])
 
-const showInput = ref(0)
 const form = ref(props.form);
-let SavedForm = form.value
+const showInput = ref(0)
+const newCategory = ref('');
+const reason = ref('');
 const showUserModal = ref(false)
 const showModifyReasonModal = ref(false)
+const SzerzodesDialog = ref(false)
+const selectedOrgani = ref(false)
+const modifyDialog = ref(false)
+const selectedCategories = ref([]);
+const priceCategories = ref([]);
+const documents = ref([]);
+const SelectedDocument = ref();
+
+
+let SavedForm = form.value
 
 const closeModal = () => {
   showUserModal.value = false
@@ -88,9 +98,6 @@ const acceptEdit = async () => {
   }
 }
 
-const newCategory = ref('');
-const selectedCategories = ref([]);
-const priceCategories = ref([]);
 
 const updatePrice = (item) => {
   item.price = item.unit === '1' ? item.newcat.egyetem : item.newcat.egyetem_hetvege;
@@ -158,14 +165,6 @@ const getPrices = async () => {
     addCategory()
   })
 
-
-
-
-
-
-
-
-
 };
 
 const removeCategory = (index) => {
@@ -177,16 +176,12 @@ if (props.showModify == 2) {
   getPrices()
 }
 
-
-
 const acceptOfferUni = async () => {
   let res = await axios.post("http://127.0.0.1:8000/api/university-accept", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
 
   location.reload();
 
 }
-
-
 
 const showOffer = async () => {
   //let res = await axios.post("http://127.0.0.1:8000/api/show-uni-offer", { "form": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
@@ -216,11 +211,101 @@ const acceptEvent = async () => {
   location.reload();
 }
 
-const modReq = async () => {
+const organizations = [
+  { 'id': 1, 'name': "Rendezvényszervező" },
+  { 'id': 2, 'name': "Uni famulusz" }
+]
 
-  let res = await axios.post("http://127.0.0.1:8000/api/modify-request-event", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+const ModifyRequest = () => modifyDialog.value = true;
+const hideDialog = () => modifyDialog.value = false;
+
+const modReq = async () => {
+  let res = await axios.post("http://127.0.0.1:8000/api/modify-request-event", { "formId": form.value.id, 'reason': reason.value, 'organizationId': selectedOrgani.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
   location.reload();
 }
+
+const openSzerzodesDialog = async () => {
+  let res = await axios.get("http://127.0.0.1:8000/api/get-documents", { headers: { 'Authorization': `Bearer ${props.token}` } })
+
+  documents.value = res.data.documents;
+
+
+
+  SzerzodesDialog.value = true
+
+}
+
+
+const cancel = async (id) => {
+  let res = await axios.post("http://127.0.0.1:8000/api/del-doc", { 'docId': id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  form.value.document = form.value.document.filter(x => x.id != res.data.id)
+}
+
+const add = async () => {
+  let res = await axios.post("http://127.0.0.1:8000/api/add-doc-event", { "formId": form.value.id, 'docId': SelectedDocument.value }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  form.value.document.push(res.data.document)
+
+}
+
+
+const addData = ref(false)
+const moddocs = ref()
+const saveform = ref({})
+
+const openAddData = (docs) => {
+  addData.value = true
+  moddocs.value = docs
+  saveform.value = Object.assign(saveform.value, form.value)
+  neededForForm.value = form.value
+}
+
+const sendToLaw = async () => {
+  let res = await axios.post("http://127.0.0.1:8000/api/send-to-law", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  location.reload();
+
+
+}
+
+const AcceptByLaw = async () => {
+  let res = await axios.post("http://127.0.0.1:8000/api/accept-by-law", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  location.reload();
+
+
+}
+
+
+const neededForForm = ref({})
+
+const setDoc = async () => {
+
+  let res = await axios.post("http://127.0.0.1:8000/api/update-docs", { "docsId": moddocs.value.id, 'data': form.value }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  
+  neededForForm.value = res.data;
+  
+  addData.value = false
+}
+
+const cancelEditDocs = async () => {
+  form.value = Object.assign(form.value, saveform.value)
+  addData.value = false
+}
+const alairva = async () => {
+  let res = await axios.post("http://127.0.0.1:8000/api/accept-by-client", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  location.reload();
+}
+
+const alairvaUni = async () => {
+  let res = await axios.post("http://127.0.0.1:8000/api/accept-by-univerzity", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  location.reload();
+}
+
+
+const szerzodesAlairva = async () => {
+  let res = await axios.post("http://127.0.0.1:8000/api/alairvaMinden", { "formId": form.value.id }, { headers: { 'Authorization': `Bearer ${props.token}` } })
+  location.reload();
+}
+
+
 
 </script>
 
@@ -292,8 +377,10 @@ const modReq = async () => {
         </table>
       </div>
       <div class="w-full flex justify-end gap-3">
-        <PrimaryButton @click="openModifyReason">Módosítás kérése</PrimaryButton>
-        <PrimaryButton class="bg-blue-600" @click="acceptOfferUni">Elfogadás</PrimaryButton>
+
+        <Button label="Módosítás kérése" @click="openModifyReason" />
+        <Button label="Elfogadás" @click="acceptOfferUni" />
+
       </div>
     </div>
 
@@ -313,8 +400,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.event_place }}
-            <InfoButton class="hover:bg-transparent bg-amber py-1" @click="modify(1)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" bg-amber py-1" @click="modify(1)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -332,8 +418,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.event_address }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(2)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(2)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -352,8 +437,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.event_type }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(3)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(3)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -371,8 +455,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.event_classification }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(4)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(4)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -397,8 +480,7 @@ const modReq = async () => {
           <div v-else>
             {{ form.start_date.split("T")[0].replace(/-/g, ".") }}
             {{ form.start_time.substring(0, form.end_time.length - 3) }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(6)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(6)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -419,8 +501,7 @@ const modReq = async () => {
           <div v-else>
             {{ form.end_date.split("T")[0].replace(/-/g, ".") }}
             {{ form.end_time.substring(0, form.end_time.length - 3) }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(7)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(7)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -442,8 +523,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.participants }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(8)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(8)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -461,8 +541,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.press_public }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(9)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(9)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -480,8 +559,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.nature }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(10)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(10)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -499,8 +577,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.program_plan }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(11)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(11)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -518,8 +595,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.venue_setup }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(12)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(12)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -541,8 +617,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.accommodation_needed }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(13)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(13)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -560,8 +635,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.accommodation_count }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(14)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(14)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -579,8 +653,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.parking_needed }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(15)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(15)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -598,8 +671,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.parking_details }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(16)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(16)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -617,8 +689,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.waste_generated }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(17)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(17)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -636,8 +707,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.waste_disposal }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(18)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(18)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -655,8 +725,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.waste_handler }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(19)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(19)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -674,8 +743,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.internet_needed }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(20)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(20)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -693,8 +761,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.tech_supportNeeded }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(21)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(21)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -712,8 +779,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.tech_equipment }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(22)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(22)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -735,8 +801,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.limited_mobility }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(23)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(23)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -754,8 +819,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.photo_videoRecording }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(24)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(24)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -773,8 +837,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.recording_tools }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(25)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(25)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -792,8 +855,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.catering_needed }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(26)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(26)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -811,8 +873,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.catering_type }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(27)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(27)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -830,8 +891,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.constructionNeeded }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(28)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(28)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -849,8 +909,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.constructionDates }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(29)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(29)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -868,8 +927,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.subcontractors }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(30)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(30)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -891,8 +949,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.fire_hazard }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(31)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(31)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -910,8 +967,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.activities }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(32)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(32)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -929,8 +985,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.chemical_usage }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(33)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(33)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -948,8 +1003,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.chemical_description }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(34)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(34)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -971,8 +1025,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.organizer_name }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(35)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(35)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -990,8 +1043,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.organizer_phone }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(36)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(36)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -1010,8 +1062,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.organizer_email }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(37)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(37)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -1029,8 +1080,7 @@ const modReq = async () => {
           </div>
           <div v-else>
             {{ form.organizer_address }}
-            <InfoButton class="hover:bg-transparent py-1" @click="modify(38)"
-              v-if="showModify != 2 && form.status == 'Beérkezett'">
+            <InfoButton class=" py-1" @click="modify(38)" v-if="showModify != 2 && form.status == 'Beérkezett'">
               <span class="pi pi-pen-to-square"></span>
             </InfoButton>
           </div>
@@ -1089,24 +1139,174 @@ const modReq = async () => {
       </ul>
     </div>
 
+
+    <div class="w-full flex justify-between gap-3" v-if="form.status == 'Partneri aláírásra vár'">
+      <slot name="buttons" />
+      <Button label="Aláírva" @click="alairva" />
+    </div>
+
+    <div class="w-full flex justify-between gap-3" v-if="form.status == 'Egyetemi aláírásra vár'">
+      <slot name="buttons" />
+      <Button label="Aláírva" @click="alairvaUni" />
+    </div>
+
+    <div class="w-full flex justify-between gap-3" v-if="form.status == 'Szerződés aláírva'">
+      <slot name="buttons" />
+      <Button label="Aláírva" @click="szerzodesAlairva" />
+    </div>
+
     <UniOfferPiceker v-if="form.status == 'Árajánlat készítésre vár'" :token="props.token" :formId="form.id"
-      @close="reload" />
+      @close="reload">
+      <slot name="buttons" />
+    </UniOfferPiceker>
 
-    <div class="w-full flex justify-end gap-3" v-if="form.status == 'Árajánlat elfogadásra vár'">
+    <div class="w-full flex justify-between gap-3" v-if="form.status == 'Árajánlat elfogadásra vár'">
+      <slot name="buttons" />
 
-      <PrimaryButton @click="showOffer">Árajánlat megtekintése</PrimaryButton>
+      <div class="flex gap-3">
+        <Button label="Módosítás kérése" @click="ModifyRequest" />
 
+        <Button label="Árajánlat megtekintése" @click="showOffer" />
 
-      <PrimaryButton @click="acceptEvent">Elfogadás</PrimaryButton>
+        <Button label="Elfogadás" @click="acceptEvent" />
+      </div>
+    </div>
+    <div class="w-full flex justify-between gap-3" v-if="form.status == 'Szerződéses adatokra vár'">
+      <slot name="buttons" />
+
+      <div class="flex gap-3">
+        <Button label="Szerződések" icon="" @click="openSzerzodesDialog" />
+        <!-- <Button label="Átnézésre küld" icon="" @click="sendToLaw" /> -->
+      </div>
+    </div>
+    <div class="w-full flex justify-between gap-3" v-if="form.status == 'Szerződés áttnézésre vár'">
+      <slot name="buttons" />
+
+      <div class="flex gap-3">
+        <Button label="Szerződések" icon="" @click="openSzerzodesDialog" />
+        <Button label="Elfogad" icon="" @click="AcceptByLaw" v-if="showModify == 3" />
+      </div>
 
 
     </div>
 
-    <slot name="buttons" />
+
+
+    <slot name="buttons"
+      v-if="form.status == 'Megvalósulásra vár' || form.status == 'Beérkezett' || form.status == 'UF Árajánlatra vár' || form.status == 'UF Árajánlat elfogadásra vár'" />
+
 
   </div>
 
-  <ModifyReasonModal :token="token" :form="form.id" :showModal="showModifyReasonModal" @close="reload" />
+  <Dialog v-model:visible="SzerzodesDialog" :style="{ width: '90rem', }" header="Szerződések" :modal="true">
+
+    <div class="flex gap-3 mb-3" v-if="form.status == 'Szerződéses adatokra vár'">
+
+      <Select v-model="SelectedDocument" :options="documents" optionLabel="name" optionValue="id"
+        placeholder="Kérem válasszon" class="w-full" emptyFilterMessage="Nincs megjeleníthető adat"
+        emptyMessage="Nincs megjeleníthető adat" />
+
+      <Button label="Hozzáad" icon="pi pi-check" @click="add" />
+    </div>
+
+    <DataTable ref="dt" :value="form.document" dataKey="id" :rows="5" class="min-h-[20rem]">
+
+      <Column field="document_type.name" header="Szerződés" sortable style="max-width: 50%"></Column>
+      <Column field="" header="Adatok" sortable style="max-width: 20%" v-if="form.status == 'Szerződéses adatokra vár'">
+        <template #body="slotProps">
+          <Button label="" icon="pi pi-plus" @click="openAddData(slotProps.data)" />
+        </template>
+      </Column>
+      <!-- <Column field="filled" header="Generálható" sortable style="max-width: 20%"
+        v-if="form.status == 'Szerződéses adatokra vár'">
+        <template #body="slotProps">
+          <i v-if="slotProps.data.filled" class="pi pi-check text-green-500 font-extrabold"></i>
+          <i v-else class="pi pi-times text-red-500 font-extrabold "></i>
+        </template>
+      </Column> -->
+      <Column header="Mégsem" style="width: 5%" v-if="form.status == 'Szerződéses adatokra vár'">
+        <template #body="slotProps">
+          <Button severity="danger" icon="pi pi-trash" @click="cancel(slotProps.data.id)" class="" />
+        </template>
+      </Column>
+      <Column header="Letöltés" style="width: 5%">
+        <template #body="slotProps">
+          
+          <Button as="a" label="" icon="pi pi-download" :href="'http://127.0.0.1:8000/api/generate-docx/' + form.id + '/' + slotProps.data.document_types_id" />
+        </template>
+      </Column>
+      <Column header="Feltöltés" style="width: 5%" v-if="form.status == 'Szerződés áttnézésre vár' && showModify == 3">
+        <template #body="slotProps">
+          <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="*" :maxFileSize="1000000" @upload="onUpload"
+            :auto="true" chooseLabel="Tallózás" chooseIcon="pi pi-folder-open" />
+          <!-- <Button as="a" label="" icon="pi pi-upload" :href="'http://127.0.0.1:8000/api/generate-docx/' + form.id" /> -->
+        </template>
+      </Column>
+
+    </DataTable>
+
+    <template #footer v-if="form.status == 'Szerződéses adatokra vár'">
+      <Button label="Mégsem" icon="pi pi-times" text @click="SzerzodesDialog = false" />
+      <Button label="Elfogadás" icon="pi pi-check" @click="sendToLaw" />
+    </template>
+
+    <template #footer v-if="form.status == 'Szerződés áttnézésre vár'">
+      <Button label="Bezár" icon="pi pi-times" text @click="SzerzodesDialog = false" />
+    </template>
+
+    <template #empty> Nincs szerződés hozzá rendelve a rendezvényhez. </template>
+  </Dialog>
+
+
+  <Dialog v-model:visible="modifyDialog" :style="{ width: '70rem' }" header="Módosítás kérése" :modal="true">
+
+    <div>
+      <Select v-model="selectedOrgani" :options="organizations" optionLabel="name" optionValue="id"
+        placeholder="Kérem válasszon" class="w-full" emptyFilterMessage="Nincs megjeleníthető adat"
+        emptyMessage="Nincs megjeleníthető adat" />
+
+      <label for="name" class="block font-bold mb-3">Indoklás</label>
+      <textarea rows="10" class="w-full p-1 border border-gray-400" v-model="reason"></textarea>
+    </div>
+
+
+    <template #footer>
+      <Button label="Mégsem" icon="pi pi-times" text @click="hideDialog" />
+      <Button label="Mentés" icon="pi pi-check" @click="modReq" />
+    </template>
+  </Dialog>
+
+  <Dialog v-model:visible="addData" :style="{ width: '70rem' }" header="Dokumentum adatok" :modal="true">
+
+    <div>
+      <div class="my-1">
+        <div>Törzskönyvi nyilvántartási szám</div>
+        <InputText id="name" v-model.trim="neededForForm.torzskonyvi_nyil_szam" required="true" fluid />
+      </div>
+      <div class="my-1">
+        <div>1. valami szám</div>
+        <InputText id="name" v-model.trim="neededForForm.targyegy" required="true" fluid />
+      </div>
+      <div class="my-1">
+        <div>1. valami száma 2</div>
+        <InputText id="name" v-model.trim="neededForForm.targyketto" required="true" fluid />
+      </div>
+      <div class="my-1">
+        <div>Meghatározás</div>
+        <InputText id="name" v-model.trim="neededForForm.meghatarozas" required="true" fluid />
+      </div>
+
+    </div>
+
+    <template #footer>
+      <Button label="Mégsem" icon="pi pi-times" text @click="cancelEditDocs" />
+      <Button label="Mentés" icon="pi pi-check" @click="setDoc" />
+    </template>
+  </Dialog>
+
+
+  <ModifyReasonModal :token="token" :form="form.id" :showModal="showModifyReasonModal" @save="reload"
+    @close="closeModal" />
   <AddUserModal :showUserModal="showUserModal" @close="closeModal" />
 
 </template>

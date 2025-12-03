@@ -18,7 +18,7 @@ const save = async () => {
 
     let res = await axios.post("http://127.0.0.1:8000/api/modify-request-event", { "formId": props.form, "reason": modifyReason.value }, { headers: { 'Authorization': `Bearer ${props.token}` } })
     
-    emit('close')
+    emit('save')
 
 }
 
@@ -55,14 +55,12 @@ const close = () => {
                         </div>
                         <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                             <div class="flex gap-4 mt-4">
-                                <InfoButton @click="close"
-                                    class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:ring-4 focus:ring-gray-300">
-                                    Mégsem
-                                </InfoButton>
-                                <InfoButton @click="save"
+                                <Button label="Mégsem" @click="close"/>
+                                <Button label="Módosítás kérés" @click="save"/>
+                                <!-- <InfoButton @click="save"
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
                                     Módosítás kérés
-                                </InfoButton>
+                                </InfoButton> -->
                             </div>
                         </div>
                     </div>

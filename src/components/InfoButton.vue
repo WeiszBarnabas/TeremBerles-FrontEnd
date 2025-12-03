@@ -1,5 +1,5 @@
 <template>
-    <button class="text-gray-700 hover:bg-gray-400 hover:text-white p-2 rounded-md cursor-pointer">
+    <button class="bg-white text-primary hover:text-secondary  p-2 rounded-md cursor-pointer mt-2">
         <slot/>
     </button>
 </template>
